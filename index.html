@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apple</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fdf6ec;
+      font-family: 'Playfair Display', Georgia, serif;
+      overflow: hidden;
+    }
+
+    /* Subtle background texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(220,80,40,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 70%, rgba(60,140,60,0.07) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 28px;
+      padding: 48px 56px 40px;
+      box-shadow:
+        0 2px 0 #e8d5b0,
+        0 8px 40px rgba(0,0,0,0.10),
+        0 1px 3px rgba(0,0,0,0.06);
+      text-align: center;
+      animation: rise 0.7s cubic-bezier(.22,1,.36,1) both;
+      max-width: 380px;
+      width: 90%;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(32px) scale(0.97); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .apple-wrap {
+      display: inline-block;
+      animation: float 3.6s ease-in-out infinite;
+      filter: drop-shadow(0 12px 24px rgba(180,50,20,0.18));
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    svg.apple {
+      width: 180px;
+      height: 180px;
+    }
+
+    h1 {
+      margin-top: 28px;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2a1a0e;
+      letter-spacing: -0.5px;
+    }
+
+    p {
+      margin-top: 8px;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1rem;
+      color: #9a7555;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="apple-wrap">
+      <!-- Hand-crafted SVG apple -->
+      <svg class="apple" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Stem -->
+        <path d="M102 38 C104 28, 116 18, 124 14" stroke="#5a3a1a" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <!-- Leaf -->
+        <ellipse cx="117" cy="22" rx="13" ry="7" fill="#4caf50" transform="rotate(-35 117 22)"/>
+        <line x1="117" y1="22" x2="110" y2="30" stroke="#388e3c" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Apple body -->
+        <path d="
+          M100 50
+          C 70 50, 38 72, 38 108
+          C 38 148, 65 175, 90 178
+          C 96 179, 100 176, 100 176
+          C 100 176, 104 179, 110 178
+          C 135 175, 162 148, 162 108
+          C 162 72, 130 50, 100 50 Z
+        " fill="#e53935"/>
+        <!-- Highlight shine -->
+        <ellipse cx="76" cy="82" rx="14" ry="20" fill="rgba(255,255,255,0.22)" transform="rotate(-20 76 82)"/>
+        <ellipse cx="68" cy="74" rx="5" ry="8" fill="rgba(255,255,255,0.30)" transform="rotate(-20 68 74)"/>
+        <!-- Indent at top (left lobe) -->
+        <path d="M100 50 C 90 42, 75 44, 72 52" stroke="#c62828" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Indent at top (right lobe) -->
+        <path d="M100 50 C 110 42, 125 44, 128 52" stroke="#c62828" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <h1>Apple</h1>
+    <p>Fresh from the orchard.</p>
+  </div>
+</body>
+</html>
