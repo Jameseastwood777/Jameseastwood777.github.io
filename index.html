@@ -29,7 +29,7 @@
         }
 
         body {
-            background-color: #ffffff;
+            background-color: #f9f9f9;
         }
 
         .top-bar {
@@ -46,6 +46,33 @@
             height: 85px;
             width: auto;
         }
+
+        /* --- Time and Date --- */
+        body {
+        margin-left: 0px;
+        min-height: 100vh;
+        display: flex;
+        font-family: Georgia, serif; /* change to your preferred font */
+        }
+
+
+
+        /* --- DATE  <h1> --- */
+        h1#live-date {
+        margin-left: 180px;
+        font-size: 34px;    /* adjust size */
+        color: #ffffff;       /* adjust colour */
+        letter-spacing: 0.02em;
+        }
+
+        /* --- TIME  <p> --- */
+        p#live-time {
+        margin-left: 200px;
+        font-size: 24px;    /* adjust size */
+        font-weight: 400;
+        color: #ffffff;       /* adjust colour */
+        letter-spacing: 0.08em;
+        }
     </style>
 </head>
 <body>
@@ -57,11 +84,62 @@
             <h1>St. John's College</h1> 
             <p1 style="margin: 25px;">Notice Board</p1>
        </div>
-
-       <div>
-            <h2 style="margin: -25px; margin-left: 350px;"> 2024-06-01</h2>
-       </div>
+        <div class="datetime-widget">
+            <h1 id="live-date">Loading date…</h1>
+            <p  id="live-time">Loading time…</p>
+        </div>
     </div>
+
+    <!-- ============================================================
+       HTML — drop these two elements anywhere on your page
+       ============================================================ -->
+  
+
+  <!-- ============================================================
+       SCRIPT — keep this as-is; it updates both elements every second
+       ============================================================ -->
+  <script>
+    /**
+     * Returns the ordinal suffix for a day number.
+     * e.g. 1 → "st", 2 → "nd", 3 → "rd", 4 → "th"
+     */
+    function ordinalSuffix(day) {
+      if (day >= 11 && day <= 13) return 'th';   // special teens
+      switch (day % 10) {
+        case 1: return 'st';
+        case 2: return 'nd';
+        case 3: return 'rd';
+        default: return 'th';
+      }
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+
+      /* --- Date parts --- */
+      const dayNames   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const monthNames = ['January','February','March','April','May','June',
+                          'July','August','September','October','November','December'];
+
+      const dayName  = dayNames[now.getDay()];
+      const date     = now.getDate();
+      const suffix   = ordinalSuffix(date);
+      const month    = monthNames[now.getMonth()];
+
+      /* --- Time parts (24-hour, zero-padded) --- */
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+
+      /* --- Inject into the DOM --- */
+      document.getElementById('live-date').textContent = `${dayName}, ${date}${suffix} ${month}`;
+      document.getElementById('live-time').textContent = `${hh}:${mm}:${ss}`;
+    }
+
+    // Run immediately, then refresh every second
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    </script>
         
    
     
