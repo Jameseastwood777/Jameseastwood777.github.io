@@ -113,6 +113,8 @@
         .sidebar {
             flex: 1;
             background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar-heading {
@@ -121,6 +123,21 @@
             color: #000000;
             text-align: center;
             padding: 16px 8px;
+        }
+
+        .sidebar-image-container {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            max-height: 50%;
+        }
+
+        .sidebar-image-container img {
+            width: 100%;
+            height: 100%;
+            max-height: calc(50vh - 50px);
+            display: block;
+            object-fit: contain;
         }
     </style>
 </head>
@@ -147,6 +164,11 @@
       <div class="sidebar-divider"></div>
       <div class="sidebar">
           <h2 id="sidebar-heading" class="sidebar-heading">Co-Curricular Timetable</h2>
+          <div class="sidebar-image-container">
+              <!-- Replace the src below with your image URL -->
+              <!-- e.g. src="https://i.ibb.co/qLk93D58/college-logo.jpg" -->
+              <img src="https://i.ibb.co/qLk93D58/college-logo.jpg" alt="Sidebar image" id="sidebar-image" style="display:none;">
+          </div>
       </div>
   </div>
 
