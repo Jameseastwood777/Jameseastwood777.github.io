@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. John's College — Post Announcement</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #f9f9f9;
+            font-family: 'Times New Roman', serif;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            width: 100%;
+            height: 100px;
+            background-color: #1d6737;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+        }
+
+        .top-bar img {
+            height: 85px;
+            width: 85px;
+            object-fit: contain;
+        }
+
+        .top-bar h1 {
+            font-family: 'Arial', sans-serif;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .top-bar p {
+            font-family: 'Times New Roman', serif;
+            font-size: 20px;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            font-family: 'Arial', sans-serif;
+            font-size: 22px;
+            color: #1d6737;
+            border-bottom: 3px solid #1d6737;
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 6px;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            font-family: 'Times New Roman', serif;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            padding: 10px 12px;
+            margin-bottom: 18px;
+            transition: border-color 0.2s;
+            outline: none;
+            background: #fff;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: #1d6737;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: 'Arial', sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-post {
+            background-color: #1d6737;
+            color: #fff;
+        }
+
+        .btn-post:hover { background-color: #155228; }
+
+        .btn-clear {
+            background-color: #c0392b;
+            color: #fff;
+        }
+
+        .btn-clear:hover { background-color: #96281b; }
+
+        .btn-view {
+            background-color: #555;
+            color: #fff;
+        }
+
+        .btn-view:hover { background-color: #333; }
+
+        .toast {
+            display: none;
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-family: 'Arial', sans-serif;
+            font-size: 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Posted list preview */
+        .posted-section { margin-top: 40px; }
+
+        .posted-section h2 { margin-bottom: 16px; }
+
+        .announcement-card {
+            background: #fff;
+            border-left: 6px solid #1d6737;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .announcement-card .card-title {
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            color: #1d6737;
+            margin-bottom: 4px;
+        }
+
+        .announcement-card .card-body {
+            font-size: 15px;
+            color: #222;
+            white-space: pre-wrap;
+        }
+
+        .announcement-card .card-meta {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        .btn-delete {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: 1px solid #c0392b;
+            color: #c0392b;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover { background: #c0392b; color: #fff; }
+
+        .no-announcements {
+            color: #888;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <img src="https://i.ibb.co/qLk93D58/college-logo.jpg" alt="college emblem">
+    <div>
+        <h1>St. John's College</h1>
+        <p>Notice Board — Admin</p>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Post an Announcement</h2>
+
+    <label for="ann-title">Title</label>
+    <input type="text" id="ann-title" placeholder="e.g. Sports Day Reminder">
+
+    <label for="ann-body">Message</label>
+    <textarea id="ann-body" placeholder="Type the announcement text here..."></textarea>
+
+    <div class="btn-row">
+        <button class="btn-post" onclick="postAnnouncement()">Post Announcement</button>
+        <button class="btn-clear" onclick="clearAll()">Clear All Announcements</button>
+        <button class="btn-view" onclick="window.open('../index.html','_blank')">View Notice Board</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="posted-section">
+        <h2>Currently Posted</h2>
+        <div id="posted-list"><p class="no-announcements">No announcements yet.</p></div>
+    </div>
+</div>
+
+<script>
+    const KEY = 'sjc_announcements';
+
+    function getAnnouncements() {
+        const raw = localStorage.getItem(KEY);
+        return raw ? JSON.parse(raw) : [];
+    }
+
+    function saveAnnouncements(arr) {
+        localStorage.setItem(KEY, JSON.stringify(arr));
+    }
+
+    function showToast(msg, success = true) {
+        const t = document.getElementById('toast');
+        t.style.display = 'block';
+        t.style.backgroundColor = success ? '#d4edda' : '#f8d7da';
+        t.style.color = success ? '#155724' : '#721c24';
+        t.style.borderColor = success ? '#c3e6cb' : '#f5c6cb';
+        t.textContent = msg;
+        setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+
+    function postAnnouncement() {
+        const title = document.getElementById('ann-title').value.trim();
+        const body  = document.getElementById('ann-body').value.trim();
+
+        if (!body) { showToast('Please enter a message.', false); return; }
+
+        const announcements = getAnnouncements();
+        const now = new Date();
+        const timestamp = now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' })
+            + ' ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+
+        announcements.unshift({ title: title || 'Announcement', body, timestamp });
+        saveAnnouncements(announcements);
+        renderPosted();
+        showToast('Announcement posted successfully!');
+
+        document.getElementById('ann-title').value = '';
+        document.getElementById('ann-body').value = '';
+    }
+
+    function deleteAnnouncement(index) {
+        const announcements = getAnnouncements();
+        announcements.splice(index, 1);
+        saveAnnouncements(announcements);
+        renderPosted();
+        showToast('Announcement removed.');
+    }
+
+    function clearAll() {
+        if (!confirm('Remove all announcements from the notice board?')) return;
+        localStorage.removeItem(KEY);
+        renderPosted();
+        showToast('All announcements cleared.');
+    }
+
+    function renderPosted() {
+        const list = document.getElementById('posted-list');
+        const announcements = getAnnouncements();
+
+        if (announcements.length === 0) {
+            list.innerHTML = '<p class="no-announcements">No announcements yet.</p>';
+            return;
+        }
+
+        list.innerHTML = announcements.map((a, i) => `
+            <div class="announcement-card">
+                <button class="btn-delete" onclick="deleteAnnouncement(${i})">Remove</button>
+                <div class="card-title">${a.title}</div>
+                <div class="card-body">${a.body}</div>
+                <div class="card-meta">Posted: ${a.timestamp}</div>
+            </div>
+        `).join('');
+    }
+
+    renderPosted();
+</script>
+</body>
+</html>

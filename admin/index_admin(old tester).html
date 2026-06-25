@@ -1,0 +1,42 @@
+<html>
+<head><title>Input</title></head>
+<body>
+  <h2>Enter content</h2>
+  <textarea id="content" rows="10" cols="50" placeholder="Type here..."></textarea>
+  <br>
+  <button onclick="publish()">Send to Main Page</button>
+
+  <script>
+    // Pre-fill with existing content if any
+    document.getElementById('content').value = localStorage.getItem('sharedContent') || '';
+
+    function publish() {
+      const text = document.getElementById('content').value;
+      localStorage.setItem('sharedContent', text);
+      alert('Sent! Open the main page to see it.');
+    }
+  </script>
+</body>
+</html>
+
+/index.html — the main page that displays it:
+html<!DOCTYPE html>
+<html>
+<head><title>Main Page</title></head>
+<body>
+  <h2>Content from subdirectory</h2>
+  <div id="output" style="white-space: pre-wrap;"></div>
+
+  <script>
+    function loadContent() {
+      const content = localStorage.getItem('sharedContent') || '(nothing yet)';
+      document.getElementById('output').textContent = content;
+    }
+
+    loadContent();
+
+    // Optional: auto-refresh every 2 seconds if both tabs are open
+    setInterval(loadContent, 2000);
+  </script>
+</body>
+</html>
