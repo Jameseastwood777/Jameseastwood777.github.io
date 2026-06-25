@@ -127,7 +127,7 @@
 
         .sidebar-image-container {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             box-sizing: border-box;
             max-height: 50%;
         }
@@ -163,15 +163,11 @@
       <div class="main-content"></div>
       <div class="sidebar-divider"></div>
       <div class="sidebar">
-          <h2 id="sidebar-heading" class="sidebar-heading">Term Calendar</h2>
+          <h2 id="sidebar-heading" class="sidebar-heading">Co-Curricular Timetable</h2>
           <div class="sidebar-image-container">
               <!-- Replace the src below with your image URL -->
               <!-- e.g. src="https://i.ibb.co/qLk93D58/college-logo.jpg" -->
-              <img src="https://i.ibb.co/1fXMrzY7/weeks.png" alt="Sidebar image" id="sidebar-image">
-          </div>
-          <h2 class="sidebar-heading">Co-Curricular Timetable</h2>
-          <div class="sidebar-image-container">
-              <img src="https://i.ibb.co/kgykcqdq/Screenshot-2026-06-25-150932.png" alt="co-curricular">
+              <img src="https://i.ibb.co/1fXMrzY7/weeks.png" alt="Sidebar image" id="sidebar-image" style="display:none;">
           </div>
       </div>
   </div>
@@ -221,7 +217,16 @@
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
+    /* --- Alternating sidebar heading --- */
+    const sidebarHeadings = ['Co-Curricular Timetable', 'Term Calendar'];
+    let headingIndex = 0;
 
+    function rotateSidebarHeading() {
+      headingIndex = (headingIndex + 1) % sidebarHeadings.length;
+      document.getElementById('sidebar-heading').textContent = sidebarHeadings[headingIndex];
+    }
+
+    setInterval(rotateSidebarHeading, 10000);
     </script>
         
    
