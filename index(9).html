@@ -1,3 +1,4 @@
+// notice board
 
 <!DOCTYPE html>
 <html lang="en">
@@ -103,10 +104,6 @@
         .main-content {
             flex: 2;
             background-color: #f9f9f9;
-            height: calc(100vh - 100px);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
         .sidebar-divider {
@@ -148,10 +145,6 @@
         /* --- Announcements Area --- */
         .announcements-area {
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            min-height: 0;
         }
 
         .announcements-heading {
@@ -161,19 +154,6 @@
             border-bottom: 3px solid #1d6737;
             padding-bottom: 8px;
             margin-bottom: 16px;
-            flex-shrink: 0;
-        }
-
-        #announcements-list {
-            overflow-y: auto;
-            flex: 1;
-            min-height: 0;
-            scrollbar-width: none;       /* Firefox */
-            -ms-overflow-style: none;    /* IE/Edge */
-        }
-
-        #announcements-list::-webkit-scrollbar {
-            display: none;               /* Chrome/Safari */
         }
 
         .no-announcements {
@@ -325,9 +305,6 @@
           <div class="card-meta">Posted: ${a.timestamp}</div>
         </div>
       `).join('');
-
-      // (Re)start the auto-scroll cycle now that content may have changed size
-      restartAutoScroll();
     }
 
     loadAnnouncements();
@@ -339,111 +316,6 @@
 
     // Fallback poll every 3 seconds
     setInterval(loadAnnouncements, 3000);
-
-    /* ---------------------------------------------------------------
-       Auto-scroll for the announcements list.
-       If the announcements overflow the visible area, slowly scroll
-       down to the bottom, pause, scroll back up to the top, pause,
-       and repeat. Pauses automatically if nothing overflows.
-       --------------------------------------------------------------- */
-    let autoScrollActive = false;
-    let autoScrollToken = 0;      // increments each restart to cancel stale loops
-    let scrollAnimFrame = null;
-    let scrollTimer = null;
-
-    const AUTOSCROLL_PAUSE_MS = 3000;   // pause at top/bottom before moving
-    const AUTOSCROLL_SPEED_PX_PER_SEC = 35; // scroll speed
-
-    function stopAutoScroll() {
-      autoScrollActive = false;
-      autoScrollToken++;
-      if (scrollAnimFrame) cancelAnimationFrame(scrollAnimFrame);
-      if (scrollTimer) clearTimeout(scrollTimer);
-      scrollAnimFrame = null;
-      scrollTimer = null;
-    }
-
-    function restartAutoScroll() {
-      stopAutoScroll();
-      autoScrollActive = true;
-      const myToken = autoScrollToken;
-      runAutoScrollLoop(myToken);
-    }
-
-    function wait(ms, token) {
-      return new Promise(resolve => {
-        scrollTimer = setTimeout(() => {
-          if (token === autoScrollToken) resolve();
-        }, ms);
-      });
-    }
-
-    function animateScrollTo(el, target, token) {
-      return new Promise(resolve => {
-        const start = el.scrollTop;
-        const distance = target - start;
-        if (Math.abs(distance) < 1) { resolve(); return; }
-        const duration = Math.max((Math.abs(distance) / AUTOSCROLL_SPEED_PX_PER_SEC) * 1000, 400);
-        const startTime = performance.now();
-
-        function step(now) {
-          if (token !== autoScrollToken) return; // cancelled
-          const progress = Math.min((now - startTime) / duration, 1);
-          el.scrollTop = start + distance * progress;
-          if (progress < 1) {
-            scrollAnimFrame = requestAnimationFrame(step);
-          } else {
-            resolve();
-          }
-        }
-        scrollAnimFrame = requestAnimationFrame(step);
-      });
-    }
-
-    async function runAutoScrollLoop(token) {
-      const el = document.getElementById('announcements-list');
-      if (!el) return;
-
-      while (token === autoScrollToken) {
-        const maxScroll = el.scrollHeight - el.clientHeight;
-
-        // Nothing to scroll — just recheck periodically in case content grows
-        if (maxScroll <= 5) {
-          await wait(1500, token);
-          continue;
-        }
-
-        await wait(AUTOSCROLL_PAUSE_MS, token);
-        if (token !== autoScrollToken) return;
-
-        await animateScrollTo(el, el.scrollHeight - el.clientHeight, token);
-        if (token !== autoScrollToken) return;
-
-        await wait(AUTOSCROLL_PAUSE_MS, token);
-        if (token !== autoScrollToken) return;
-
-        await animateScrollTo(el, 0, token);
-      }
-    }
-
-    // Pause auto-scroll while a visitor is manually interacting with the list
-    (function attachAutoScrollPauseHandlers() {
-      const el = document.getElementById('announcements-list');
-      if (!el) return;
-      ['mouseenter', 'touchstart', 'wheel'].forEach(evt => {
-        el.addEventListener(evt, stopAutoScroll, { passive: true });
-      });
-      ['mouseleave', 'touchend'].forEach(evt => {
-        el.addEventListener(evt, restartAutoScroll, { passive: true });
-      });
-    })();
-
-    // Recalculate on window resize (layout height may change)
-    let resizeDebounce;
-    window.addEventListener('resize', function() {
-      clearTimeout(resizeDebounce);
-      resizeDebounce = setTimeout(restartAutoScroll, 300);
-    });
     </script>
         
    
