@@ -308,21 +308,13 @@
 
 
     /* --- Announcements --- */
-    let lastAnnouncementsRaw = null; // tracks last-seen data so we don't reset the scroll every poll
-
     function loadAnnouncements() {
       const list = document.getElementById('announcements-list');
       const raw = localStorage.getItem('sjc_announcements');
-
-      // Nothing changed since last check — leave the DOM and the scroll cycle alone
-      if (raw === lastAnnouncementsRaw) return;
-      lastAnnouncementsRaw = raw;
-
       const announcements = raw ? JSON.parse(raw) : [];
 
       if (announcements.length === 0) {
         list.innerHTML = '<p class="no-announcements">No announcements posted yet.</p>';
-        stopAutoScroll();
         return;
       }
 
@@ -334,7 +326,7 @@
         </div>
       `).join('');
 
-      // (Re)start the auto-scroll cycle now that content has actually changed
+      // (Re)start the auto-scroll cycle now that content may have changed size
       restartAutoScroll();
     }
 
