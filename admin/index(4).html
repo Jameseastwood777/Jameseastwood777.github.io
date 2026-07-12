@@ -305,7 +305,7 @@
     <div class="lock-box">
         <h3>Admin Login Required</h3>
         <label for="lock-email">Email</label>
-        <input type="text" id="lock-email" placeholder="admin@stjohns.co.zw" autocomplete="username">
+        <input type="text" id="lock-email" placeholder="user@stjohns.co.zw" autocomplete="username">
         <label for="lock-password">Password</label>
         <input type="password" id="lock-password" placeholder="Enter password" autocomplete="current-password">
         <p class="lock-error" id="lock-error">Incorrect email or password.</p>
@@ -350,14 +350,14 @@
     const SUPABASE_URL = 'https://qvdnogycmnbctfwcionn.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZG5vZ3ljbW5iY3Rmd2Npb25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzQ2NDgsImV4cCI6MjA5OTI1MDY0OH0.xg7TBLfsHY37GRNnHVvHXGPHHNbxOj9eMjR7MuyD0g8';
 
-    let supabaseClient = null;
+    let supabase = null;
     const BUCKET = 'announcement-images';
 
     try {
         if (!window.supabase) {
             throw new Error('Supabase library failed to load (check your internet connection or ad-blocker).');
         }
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     } catch (initErr) {
         console.error('Supabase init failed:', initErr);
         const errorMsg = document.getElementById('lock-error');
@@ -374,7 +374,7 @@
 
         errorMsg.style.display = 'none';
 
-        if (!supabaseClient) {
+        if (!supabase) {
             errorMsg.textContent = 'Cannot log in: Supabase failed to initialize. Check the browser console (F12) for details.';
             errorMsg.style.display = 'block';
             return;
@@ -390,7 +390,7 @@
         btn.textContent = 'Logging in…';
 
         try {
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
                 errorMsg.textContent = error.message;
@@ -409,7 +409,7 @@
     }
 
     async function logout() {
-        await supabaseClient.auth.signOut();
+        await supabase.auth.signOut();
         location.reload();
     }
 
@@ -422,8 +422,8 @@
 
     // If already logged in (existing session), skip the lock screen
     (async function checkExistingSession() {
-        if (!supabaseClient) return;
-        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!supabase) return;
+        const { data: { session } } = await supabase.auth.getSession();
         if (session) unlockUI();
     })();
 
@@ -476,18 +476,18 @@
             if (file) {
                 const ext = file.name.split('.').pop();
                 const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-                const { error: uploadError } = await supabaseClient.storage
+                const { error: uploadError } = await supabase.storage
                     .from(BUCKET)
                     .upload(path, file);
                 if (uploadError) throw uploadError;
 
-                const { data: publicUrlData } = supabaseClient.storage
+                const { data: publicUrlData } = supabase.storage
                     .from(BUCKET)
                     .getPublicUrl(path);
                 image_url = publicUrlData.publicUrl;
             }
 
-            const { error: insertError } = await supabaseClient
+            const { error: insertError } = await supabase
                 .from('announcements')
                 .insert({ title: title || 'Announcement', body, image_url });
 
@@ -508,7 +508,7 @@
     }
 
     async function deleteAnnouncement(id) {
-        const { error } = await supabaseClient.from('announcements').delete().eq('id', id);
+        const { error } = await supabase.from('announcements').delete().eq('id', id);
         if (error) {
             showToast('Failed to delete: ' + error.message, false);
             return;
@@ -520,7 +520,7 @@
     async function clearAll() {
         if (!confirm('Remove all announcements from the notice board?')) return;
         // delete-all: match every row (id is never null)
-        const { error } = await supabaseClient.from('announcements').delete().not('id', 'is', null);
+        const { error } = await supabase.from('announcements').delete().not('id', 'is', null);
         if (error) {
             showToast('Failed to clear: ' + error.message, false);
             return;
@@ -532,7 +532,7 @@
     async function renderPosted() {
         const list = document.getElementById('posted-list');
 
-        const { data, error } = await supabaseClient
+        const { data, error } = await supabase
             .from('announcements')
             .select('*')
             .order('created_at', { ascending: false });

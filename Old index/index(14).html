@@ -276,7 +276,7 @@
     const SUPABASE_URL = 'https://qvdnogycmnbctfwcionn.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZG5vZ3ljbW5iY3Rmd2Npb25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzQ2NDgsImV4cCI6MjA5OTI1MDY0OH0.xg7TBLfsHY37GRNnHVvHXGPHHNbxOj9eMjR7MuyD0g8';
 
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     /* --- Date / time widget (unchanged) --- */
     function ordinalSuffix(day) {
@@ -323,7 +323,7 @@
     async function loadAnnouncements() {
       const list = document.getElementById('announcements-list');
 
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('announcements')
         .select('*')
         .order('created_at', { ascending: false });
@@ -452,7 +452,7 @@
     loadAnnouncements();
 
     /* --- Live sync: Supabase Realtime pushes changes instantly --- */
-    supabaseClient
+    supabase
       .channel('announcements-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'announcements' }, () => {
         loadAnnouncements();
