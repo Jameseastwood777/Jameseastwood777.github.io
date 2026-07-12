@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,10 +33,11 @@
 
         .top-bar h1 {
             font-family: 'Arial', sans-serif;
-            font-size: 34px;
+            font-size: 24px;
             margin-left: 16px;
             color: #ffffff;
             font-weight: bold;
+            font-size: 34px;
             white-space: nowrap;
         }
 
@@ -71,7 +74,7 @@
             font-weight: bold;
         }
 
-        input[type="text"], input[type="file"], textarea {
+        input[type="text"], textarea {
             width: 100%;
             font-family: 'Times New Roman', serif;
             font-size: 16px;
@@ -97,7 +100,6 @@
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
-            align-items: center;
         }
 
         button {
@@ -111,19 +113,26 @@
             transition: background 0.2s;
         }
 
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-post {
+            background-color: #1d6737;
+            color: #fff;
+        }
 
-        .btn-post { background-color: #1d6737; color: #fff; }
-        .btn-post:hover:not(:disabled) { background-color: #155228; }
+        .btn-post:hover { background-color: #155228; }
 
-        .btn-clear { background-color: #c0392b; color: #fff; }
-        .btn-clear:hover:not(:disabled) { background-color: #96281b; }
+        .btn-clear {
+            background-color: #c0392b;
+            color: #fff;
+        }
 
-        .btn-view { background-color: #555; color: #fff; }
+        .btn-clear:hover { background-color: #96281b; }
+
+        .btn-view {
+            background-color: #555;
+            color: #fff;
+        }
+
         .btn-view:hover { background-color: #333; }
-
-        .btn-logout { background: none; color: #555; border: 1px solid #999; }
-        .btn-logout:hover { background: #eee; }
 
         .toast {
             display: none;
@@ -137,7 +146,9 @@
             border: 1px solid #c3e6cb;
         }
 
+        /* Posted list preview */
         .posted-section { margin-top: 40px; }
+
         .posted-section h2 { margin-bottom: 16px; }
 
         .announcement-card {
@@ -148,15 +159,6 @@
             padding: 12px 16px;
             margin-bottom: 12px;
             position: relative;
-        }
-
-        .announcement-card img.thumb {
-            max-width: 100%;
-            max-height: 160px;
-            object-fit: contain;
-            display: block;
-            margin-bottom: 8px;
-            border-radius: 4px;
         }
 
         .announcement-card .card-title {
@@ -195,17 +197,22 @@
 
         .btn-delete:hover { background: #c0392b; color: #fff; }
 
-        .no-announcements { color: #888; font-size: 16px; }
+        .no-announcements {
+            color: #888;
+            font-size: 16px;
+        }
 
+        /* Blur applied to the main content while locked */
         .container.blurred {
             filter: blur(6px);
             pointer-events: none;
             user-select: none;
         }
 
+        /* Lock overlay — sits below the top bar only */
         .lock-overlay {
             position: fixed;
-            top: 100px;
+            top: 100px; /* height of top-bar */
             left: 0;
             right: 0;
             bottom: 0;
@@ -317,75 +324,38 @@
     <label for="ann-body">Message</label>
     <textarea id="ann-body" placeholder="Type the announcement text here..."></textarea>
 
-    <label for="ann-image">Image (optional)</label>
-    <input type="file" id="ann-image" accept="image/*">
-
     <div class="btn-row">
-        <button class="btn-post" id="post-btn" onclick="postAnnouncement()">Post Announcement</button>
+        <button class="btn-post" onclick="postAnnouncement()">Post Announcement</button>
         <button class="btn-clear" onclick="clearAll()">Clear All Announcements</button>
         <button class="btn-view" onclick="window.open('../index.html','_blank')">View Notice Board</button>
-        <button class="btn-logout" onclick="logout()">Log Out</button>
     </div>
 
     <div class="toast" id="toast"></div>
 
     <div class="posted-section">
         <h2>Currently Posted</h2>
-        <div id="posted-list"><p class="no-announcements">Loading…</p></div>
+        <div id="posted-list"><p class="no-announcements">No announcements yet.</p></div>
     </div>
 </div>
 
-<!-- Supabase client library -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-    /* ============================================================
-       SUPABASE CONFIG — must match index.html exactly
-       ============================================================ */
-    const SUPABASE_URL = 'https://qvdnogycmnbctfwcionn.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZG5vZ3ljbW5iY3Rmd2Npb25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzQ2NDgsImV4cCI6MjA5OTI1MDY0OH0.xg7TBLfsHY37GRNnHVvHXGPHHNbxOj9eMjR7MuyD0g8';
+    const KEY = 'sjc_announcements';
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const BUCKET = 'announcement-images';
+    const ADMIN_EMAIL = 'admin@stjohns.co.zw';
+    const ADMIN_PASSWORD = 'Hackathon2026';
 
-    /* --- Auth --- */
-    async function checkLogin() {
+    function checkLogin() {
         const email = document.getElementById('lock-email').value.trim();
         const password = document.getElementById('lock-password').value;
         const errorMsg = document.getElementById('lock-error');
-        const btn = document.querySelector('.lock-box button');
 
-        btn.disabled = true;
-        errorMsg.style.display = 'none';
-
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-        btn.disabled = false;
-
-        if (error) {
-            errorMsg.textContent = error.message;
+        if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+            document.getElementById('lock-overlay').style.display = 'none';
+            document.getElementById('main-container').classList.remove('blurred');
+        } else {
             errorMsg.style.display = 'block';
-            return;
         }
-        unlockUI();
     }
-
-    async function logout() {
-        await supabase.auth.signOut();
-        location.reload();
-    }
-
-    function unlockUI() {
-        document.getElementById('lock-overlay').style.display = 'none';
-        document.getElementById('main-container').classList.remove('blurred');
-        renderPosted();
-    }
-
-    // If already logged in (existing session), skip the lock screen
-    (async function checkExistingSession() {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) unlockUI();
-    })();
 
     document.getElementById('lock-password').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') checkLogin();
@@ -394,17 +364,13 @@
         if (e.key === 'Enter') checkLogin();
     });
 
-    /* --- Helpers --- */
-    function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+    function getAnnouncements() {
+        const raw = localStorage.getItem(KEY);
+        return raw ? JSON.parse(raw) : [];
     }
 
-    function formatTimestamp(iso) {
-        const d = new Date(iso);
-        return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
-            + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    function saveAnnouncements(arr) {
+        localStorage.setItem(KEY, JSON.stringify(arr));
     }
 
     function showToast(msg, success = true) {
@@ -417,106 +383,61 @@
         setTimeout(() => { t.style.display = 'none'; }, 3000);
     }
 
-    /* --- Post / delete / clear --- */
-    async function postAnnouncement() {
+    function postAnnouncement() {
         const title = document.getElementById('ann-title').value.trim();
         const body  = document.getElementById('ann-body').value.trim();
-        const fileInput = document.getElementById('ann-image');
-        const file = fileInput.files[0];
-        const postBtn = document.getElementById('post-btn');
 
         if (!body) { showToast('Please enter a message.', false); return; }
 
-        postBtn.disabled = true;
-        postBtn.textContent = 'Posting…';
+        const announcements = getAnnouncements();
+        const now = new Date();
+        const timestamp = now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' })
+            + ' ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
 
-        let image_url = null;
+        announcements.unshift({ title: title || 'Announcement', body, timestamp });
+        saveAnnouncements(announcements);
+        renderPosted();
+        showToast('Announcement posted successfully!');
 
-        try {
-            if (file) {
-                const ext = file.name.split('.').pop();
-                const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-                const { error: uploadError } = await supabase.storage
-                    .from(BUCKET)
-                    .upload(path, file);
-                if (uploadError) throw uploadError;
-
-                const { data: publicUrlData } = supabase.storage
-                    .from(BUCKET)
-                    .getPublicUrl(path);
-                image_url = publicUrlData.publicUrl;
-            }
-
-            const { error: insertError } = await supabase
-                .from('announcements')
-                .insert({ title: title || 'Announcement', body, image_url });
-
-            if (insertError) throw insertError;
-
-            showToast('Announcement posted successfully!');
-            document.getElementById('ann-title').value = '';
-            document.getElementById('ann-body').value = '';
-            fileInput.value = '';
-            renderPosted();
-        } catch (err) {
-            console.error(err);
-            showToast('Failed to post: ' + err.message, false);
-        } finally {
-            postBtn.disabled = false;
-            postBtn.textContent = 'Post Announcement';
-        }
+        document.getElementById('ann-title').value = '';
+        document.getElementById('ann-body').value = '';
     }
 
-    async function deleteAnnouncement(id) {
-        const { error } = await supabase.from('announcements').delete().eq('id', id);
-        if (error) {
-            showToast('Failed to delete: ' + error.message, false);
-            return;
-        }
+    function deleteAnnouncement(index) {
+        const announcements = getAnnouncements();
+        announcements.splice(index, 1);
+        saveAnnouncements(announcements);
+        renderPosted();
         showToast('Announcement removed.');
-        renderPosted();
     }
 
-    async function clearAll() {
+    function clearAll() {
         if (!confirm('Remove all announcements from the notice board?')) return;
-        // delete-all: match every row (id is never null)
-        const { error } = await supabase.from('announcements').delete().not('id', 'is', null);
-        if (error) {
-            showToast('Failed to clear: ' + error.message, false);
-            return;
-        }
-        showToast('All announcements cleared.');
+        localStorage.removeItem(KEY);
         renderPosted();
+        showToast('All announcements cleared.');
     }
 
-    async function renderPosted() {
+    function renderPosted() {
         const list = document.getElementById('posted-list');
+        const announcements = getAnnouncements();
 
-        const { data, error } = await supabase
-            .from('announcements')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) {
-            list.innerHTML = `<p class="no-announcements">Error loading: ${escapeHtml(error.message)}</p>`;
-            return;
-        }
-
-        if (!data || data.length === 0) {
+        if (announcements.length === 0) {
             list.innerHTML = '<p class="no-announcements">No announcements yet.</p>';
             return;
         }
 
-        list.innerHTML = data.map(a => `
+        list.innerHTML = announcements.map((a, i) => `
             <div class="announcement-card">
-                <button class="btn-delete" onclick="deleteAnnouncement('${a.id}')">Remove</button>
-                ${a.image_url ? `<img class="thumb" src="${escapeHtml(a.image_url)}" alt="">` : ''}
-                <div class="card-title">${escapeHtml(a.title)}</div>
-                <div class="card-body">${escapeHtml(a.body)}</div>
-                <div class="card-meta">Posted: ${formatTimestamp(a.created_at)}</div>
+                <button class="btn-delete" onclick="deleteAnnouncement(${i})">Remove</button>
+                <div class="card-title">${a.title}</div>
+                <div class="card-body">${a.body}</div>
+                <div class="card-meta">Posted: ${a.timestamp}</div>
             </div>
         `).join('');
     }
+
+    renderPosted();
 </script>
 </body>
 </html>
