@@ -205,7 +205,6 @@
             max-height: 320px;
             object-fit: contain;
             border-radius: 4px;
-            margin-top: 10px;
             margin-bottom: 10px;
             display: block;
         }
@@ -342,9 +341,9 @@
 
       list.innerHTML = data.map(a => `
         <div class="announcement-card">
-          <div class="card-title">${escapeHtml(a.title || 'Announcement')}</div>
-          ${a.body ? `<div class="card-body">${escapeHtml(a.body)}</div>` : ''}
           ${a.image_url ? `<img class="card-image" src="${escapeHtml(a.image_url)}" alt="">` : ''}
+          <div class="card-title">${escapeHtml(a.title || 'Announcement')}</div>
+          <div class="card-body">${escapeHtml(a.body)}</div>
           <div class="card-meta">Posted: ${formatTimestamp(a.created_at)}</div>
         </div>
       `).join('');
