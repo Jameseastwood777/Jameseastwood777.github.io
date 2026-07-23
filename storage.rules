@@ -1,0 +1,21 @@
+// ============================================================
+// St. John's College Notice Board — Firebase Storage rules
+// Deploy: firebase deploy --only storage
+// (or paste into Firebase Console → Storage → Rules)
+//
+// Public can view uploaded images/video/attachments; only a
+// logged-in admin can upload or delete them. Requires the
+// project to be on the Blaze (pay-as-you-go) plan — Cloud
+// Storage cannot be enabled on Spark for projects created after
+// late 2024.
+// ============================================================
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /announcements/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}

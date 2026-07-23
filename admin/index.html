@@ -5,10 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>St. John's College — Post Announcement</title>
     <style>
+        :root {
+            --green-900: #0f3319;
+            --green-800: #1d6737;
+            --green-700: #237a41;
+            --green-600: #2c8f4d;
+            --gold-700:  #8a6a1a;
+            --gold-500:  #a6842c;
+            --gold-300:  #d4b568;
+            --gold-100:  #f2e8cf;
+            --sky-500:   #3aa1d6;
+            --sky-100:   #eaf6fc;
+            --cream-50:  #f7f5ee;
+            --cream-100: #efe8d8;
+            --ink-900:   #1b1b1b;
+            --ink-600:   #4a4a4a;
+            --ink-400:   #8a8a8a;
+            --red-600:   #d62b31;
+            --yellow-400:#f0d956;
+            --shadow-sm: 0 2px 6px rgba(15, 51, 25, 0.10);
+            --shadow-md: 0 6px 18px rgba(15, 51, 25, 0.16);
+            --shadow-lg: 0 10px 28px rgba(15, 51, 25, 0.22);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: #f9f9f9;
+            background-color: var(--cream-50);
             font-family: 'Times New Roman', serif;
             min-height: 100vh;
         }
@@ -20,25 +43,28 @@
 
         .top-bar {
             width: 100%;
-            height: 100px;
-            background-color: #1d6737;
+            min-height: 100px;
+            background: linear-gradient(120deg, var(--green-900) 0%, var(--green-800) 55%, var(--green-700) 100%);
+            border-bottom: 4px solid var(--gold-500);
+            box-shadow: var(--shadow-md);
             display: flex;
             align-items: center;
-            padding: 0 16px;
+            flex-wrap: wrap;
+            padding: 10px 20px;
             gap: 16px;
-            overflow: hidden;
         }
 
         .top-bar img {
-            height: 85px;
-            width: 85px;
+            height: 70px;
+            width: 70px;
             object-fit: contain;
             flex-shrink: 0;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
         }
 
         .top-bar h1 {
             font-family: 'Arial', sans-serif;
-            font-size: 34px;
+            font-size: 30px;
             margin-left: 16px;
             color: #ffffff;
             font-weight: bold;
@@ -47,58 +73,93 @@
 
         .top-bar p {
             font-family: 'Times New Roman', serif;
-            font-size: 25px;
+            font-size: 22px;
             margin-left: 16px;
-            color: #ffffff;
+            color: var(--gold-100);
             white-space: nowrap;
             display: block;
         }
 
-        .college-name {
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
+        .college-name { flex-shrink: 0; white-space: nowrap; }
 
         .datetime-widget {
             margin-left: auto;
             flex-shrink: 0;
             white-space: nowrap;
             text-align: right;
-            padding-right: 16px;
+            padding-right: 8px;
         }
 
-        /* --- DATE  <h1> --- */
-        h1#live-date {
-            font-size: 28px;
-            color: #ffffff;
-            white-space: nowrap;
-            margin-left: 0;
-        }
-
-        /* --- TIME  <p> --- */
-        p#live-time {
-            font-size: 22px;
-            font-weight: 400;
-            color: #ffffff;
-            letter-spacing: 0.08em;
-            white-space: nowrap;
-            margin-left: 0;
-        }
+        h1#live-date { font-size: 24px; color: #ffffff; white-space: nowrap; margin-left: 0; }
+        p#live-time  { font-family: 'Arial', sans-serif; font-size: 18px; font-weight: 400; color: var(--gold-100); letter-spacing: 0.08em; white-space: nowrap; margin-left: 0; }
 
         .container {
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 0 20px;
+            max-width: 760px;
+            margin: 32px auto;
+            padding: 0 20px 60px;
         }
 
         h2 {
             font-family: 'Arial', sans-serif;
             font-size: 22px;
-            color: #1d6737;
-            border-bottom: 3px solid #1d6737;
+            color: var(--green-800);
+            border-bottom: 3px solid var(--green-800);
             padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--cream-100);
+            padding: 20px 22px;
             margin-bottom: 24px;
         }
+
+        .stats-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 140px;
+            background: linear-gradient(135deg, var(--green-800), var(--green-700));
+            color: #fff;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            padding: 14px 16px;
+        }
+
+        .stat-card .stat-value {
+            font-family: 'Arial', sans-serif;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .stat-card .stat-label {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .qr-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--cream-100);
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+
+        .qr-card img { width: 72px; height: 72px; border-radius: 6px; background: #fff; box-shadow: var(--shadow-sm); }
+        .qr-card span { font-family: 'Arial', sans-serif; font-size: 13px; color: var(--ink-600); }
+        .qr-card a { color: var(--green-800); font-weight: bold; }
 
         label {
             display: block;
@@ -109,7 +170,15 @@
             font-weight: bold;
         }
 
-        input[type="text"], input[type="file"], textarea {
+        .field-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .field-row > div { flex: 1; min-width: 200px; }
+
+        input[type="text"], input[type="file"], input[type="date"], textarea, select {
             width: 100%;
             font-family: 'Times New Roman', serif;
             font-size: 16px;
@@ -122,37 +191,38 @@
             background: #fff;
         }
 
-        input[type="text"]:focus, textarea:focus {
-            border-color: #1d6737;
+        input[type="text"]:focus, textarea:focus, select:focus, input[type="date"]:focus {
+            border-color: var(--green-800);
         }
 
-        select#ann-priority {
-            width: 100%;
-            font-family: 'Times New Roman', serif;
-            font-size: 16px;
-            border: 2px solid #ccc;
-            border-radius: 4px;
-            padding: 10px 12px;
-            margin-bottom: 18px;
-            outline: none;
-            background: #fff;
-        }
+        textarea { resize: vertical; min-height: 120px; }
 
-        select#ann-priority:focus {
-            border-color: #1d6737;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
+        .suggestion-chip {
+            display: none;
             align-items: center;
+            gap: 8px;
+            background: var(--gold-100);
+            border: 1px solid var(--gold-500);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-family: 'Arial', sans-serif;
+            font-size: 13px;
+            color: var(--ink-900);
+            margin: -10px 0 18px;
+            width: fit-content;
         }
+
+        .suggestion-chip button {
+            background: var(--green-800);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 3px 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 
         button {
             font-family: 'Arial', sans-serif;
@@ -162,21 +232,23 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: var(--shadow-sm);
         }
 
+        button:active { transform: translateY(1px); }
         button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .btn-post { background-color: #1d6737; color: #fff; }
-        .btn-post:hover:not(:disabled) { background-color: #155228; }
+        .btn-post { background: linear-gradient(135deg, var(--green-700), var(--green-900)); color: #fff; }
+        .btn-post:hover:not(:disabled) { background: var(--green-800); }
 
-        .btn-clear { background-color: #c0392b; color: #fff; }
-        .btn-clear:hover:not(:disabled) { background-color: #96281b; }
+        .btn-clear { background-color: var(--red-600); color: #fff; }
+        .btn-clear:hover:not(:disabled) { background-color: #a72025; }
 
-        .btn-view { background-color: #555; color: #fff; }
-        .btn-view:hover { background-color: #333; }
+        .btn-view { background-color: var(--gold-500); color: #fff; }
+        .btn-view:hover { background-color: var(--gold-700); }
 
-        .btn-logout { background: none; color: #555; border: 1px solid #999; }
+        .btn-logout { background: none; color: #555; border: 1px solid #999; box-shadow: none; }
         .btn-logout:hover { background: #eee; }
 
         .toast {
@@ -191,28 +263,26 @@
             border: 1px solid #c3e6cb;
         }
 
-        .posted-section { margin-top: 40px; }
+        .posted-section { margin-top: 8px; }
         .posted-section h2 { margin-bottom: 16px; }
 
         .announcement-card {
             background: #fff;
-            border-left: 6px solid #1d6737;
-            border-radius: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border-left: 6px solid var(--green-800);
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
             padding: 12px 16px;
             margin-bottom: 12px;
             position: relative;
+            transition: box-shadow 0.15s ease;
         }
 
-        .announcement-card.priority-important {
-            border-left-color: #d62b31;
-        }
+        .announcement-card:hover { box-shadow: var(--shadow-md); }
 
-        .announcement-card.priority-urgent {
-            border-left-color: #f0d956;
-        }
+        .announcement-card.priority-important { border-left-color: var(--red-600); }
+        .announcement-card.priority-urgent { border-left-color: var(--yellow-400); }
 
-        .priority-badge {
+        .priority-badge, .category-badge {
             display: inline-block;
             font-family: 'Arial', sans-serif;
             font-size: 11px;
@@ -222,220 +292,99 @@
             padding: 2px 8px;
             border-radius: 10px;
             margin-bottom: 6px;
+            margin-right: 4px;
         }
 
-        .priority-badge.badge-important {
-            background-color: #d62b31;
-            color: #fff;
-        }
-
-        .priority-badge.badge-urgent {
-            background-color: #f0d956;
-            color: #4a3c00;
-        }
+        .priority-badge.badge-important { background-color: var(--red-600); color: #fff; }
+        .priority-badge.badge-urgent { background-color: var(--yellow-400); color: #4a3c00; }
+        .category-badge { background: var(--sky-100); color: var(--sky-500); border: 1px solid var(--sky-500); text-transform: none; }
+        .expiry-badge { background: #eee; color: var(--ink-600); border: 1px solid #ccc; text-transform: none; }
 
         .announcement-card img.thumb {
-            max-width: 100%;
-            max-height: 160px;
-            object-fit: contain;
-            display: block;
-            margin-top: 8px;
-            margin-bottom: 8px;
-            border-radius: 4px;
+            max-width: 100%; max-height: 160px; object-fit: contain; display: block;
+            margin-top: 8px; margin-bottom: 8px; border-radius: 4px;
         }
 
         .announcement-card video.thumb {
-            max-width: 100%;
-            max-height: 200px;
-            display: block;
-            margin-top: 8px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-            background: #000;
+            max-width: 100%; max-height: 200px; display: block;
+            margin-top: 8px; margin-bottom: 8px; border-radius: 4px; background: #000;
         }
 
-        .announcement-card .attachment-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 8px;
-        }
+        .announcement-card .attachment-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 
         .announcement-card .attachment-tags a {
-            font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            color: #1d6737;
-            background: #eef6f0;
-            border: 1px solid #1d6737;
-            border-radius: 10px;
-            padding: 3px 10px;
-            text-decoration: none;
+            font-family: 'Arial', sans-serif; font-size: 12px; color: var(--green-800);
+            background: var(--sky-100); border: 1px solid var(--green-800); border-radius: 10px;
+            padding: 3px 10px; text-decoration: none;
         }
 
-        .announcement-card .attachment-tags a:hover {
-            background: #1d6737;
-            color: #fff;
-        }
+        .announcement-card .attachment-tags a:hover { background: var(--green-800); color: #fff; }
 
-        .selected-files {
-            list-style: none;
-            font-family: 'Arial', sans-serif;
-            font-size: 13px;
-            color: #444;
-            margin: -10px 0 18px;
-        }
+        .selected-files { list-style: none; font-family: 'Arial', sans-serif; font-size: 13px; color: #444; margin: -10px 0 18px; }
 
         .selected-files li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f2f2f2;
-            border-radius: 4px;
-            padding: 5px 10px;
-            margin-top: 6px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #f2f2f2; border-radius: 4px; padding: 5px 10px; margin-top: 6px;
         }
 
-        .selected-files li button {
-            border: none;
-            background: none;
-            color: #c0392b;
-            font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            cursor: pointer;
-            padding: 0;
-        }
+        .selected-files li button { border: none; background: none; color: var(--red-600); font-family: 'Arial', sans-serif; font-size: 12px; cursor: pointer; box-shadow: none; padding: 0; }
 
-        .announcement-card .card-title {
-            font-family: 'Arial', sans-serif;
-            font-size: 16px;
-            font-weight: bold;
-            color: #1d6737;
-            margin-bottom: 4px;
-        }
-
-        .announcement-card .card-body {
-            font-size: 15px;
-            color: #222;
-            white-space: pre-wrap;
-        }
-
-        .announcement-card .card-meta {
-            font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            color: #999;
-            margin-top: 6px;
-        }
+        .announcement-card .card-title { font-family: 'Arial', sans-serif; font-size: 16px; font-weight: bold; color: var(--green-800); margin-bottom: 4px; }
+        .announcement-card .card-body { font-size: 15px; color: #222; white-space: pre-wrap; }
+        .announcement-card .card-meta { font-family: 'Arial', sans-serif; font-size: 12px; color: var(--ink-400); margin-top: 6px; }
 
         .btn-delete {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: 1px solid #c0392b;
-            color: #c0392b;
-            font-size: 12px;
-            padding: 3px 8px;
-            border-radius: 3px;
-            cursor: pointer;
+            position: absolute; top: 10px; right: 10px;
+            background: none; border: 1px solid var(--red-600); color: var(--red-600);
+            font-size: 12px; padding: 3px 8px; border-radius: 3px; cursor: pointer; box-shadow: none;
         }
 
-        .btn-delete:hover { background: #c0392b; color: #fff; }
+        .btn-delete:hover { background: var(--red-600); color: #fff; }
 
-        .no-announcements { color: #888; font-size: 16px; }
+        .no-announcements { color: var(--ink-400); font-size: 16px; }
 
-        .container.blurred {
-            filter: blur(6px);
-            pointer-events: none;
-            user-select: none;
-        }
+        .container.blurred { filter: blur(6px); pointer-events: none; user-select: none; }
 
         .lock-overlay {
-            position: fixed;
-            top: 100px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
+            position: fixed; top: 100px; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 51, 25, 0.35); display: flex; align-items: center; justify-content: center; z-index: 1000;
         }
 
         .lock-box {
-            background: #ffffff;
-            width: 90%;
-            max-width: 360px;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-            padding: 28px 26px;
+            background: #ffffff; width: 90%; max-width: 360px; border-radius: 8px;
+            box-shadow: var(--shadow-lg); padding: 28px 26px; border-top: 4px solid var(--gold-500);
         }
 
-        .lock-box h3 {
-            font-family: 'Arial', sans-serif;
-            color: #1d6737;
-            font-size: 20px;
-            margin-bottom: 18px;
-            text-align: center;
+        .lock-box h3 { font-family: 'Arial', sans-serif; color: var(--green-800); font-size: 20px; margin-bottom: 18px; text-align: center; }
+        .lock-box label { display: block; font-family: 'Arial', sans-serif; font-weight: bold; font-size: 14px; color: #333; margin-bottom: 6px; }
+
+        .lock-box input[type="text"], .lock-box input[type="password"] {
+            width: 100%; font-family: 'Times New Roman', serif; font-size: 15px; border: 2px solid #ccc;
+            border-radius: 4px; padding: 9px 11px; margin-bottom: 14px; outline: none; background: #fff;
         }
 
-        .lock-box label {
-            display: block;
-            font-family: 'Arial', sans-serif;
-            font-weight: bold;
-            font-size: 14px;
-            color: #333;
-            margin-bottom: 6px;
-        }
-
-        .lock-box input[type="text"],
-        .lock-box input[type="password"] {
-            width: 100%;
-            font-family: 'Times New Roman', serif;
-            font-size: 15px;
-            border: 2px solid #ccc;
-            border-radius: 4px;
-            padding: 9px 11px;
-            margin-bottom: 14px;
-            outline: none;
-            background: #fff;
-        }
-
-        .lock-box input[type="text"]:focus,
-        .lock-box input[type="password"]:focus {
-            border-color: #1d6737;
-        }
+        .lock-box input[type="text"]:focus, .lock-box input[type="password"]:focus { border-color: var(--green-800); }
 
         .lock-box button {
-            width: 100%;
-            font-family: 'Arial', sans-serif;
-            font-size: 15px;
-            font-weight: bold;
-            padding: 10px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background-color: #1d6737;
-            color: #fff;
-            transition: background 0.2s;
+            width: 100%; font-family: 'Arial', sans-serif; font-size: 15px; font-weight: bold; padding: 10px 0;
+            border: none; border-radius: 4px; cursor: pointer; background: linear-gradient(135deg, var(--green-700), var(--green-900)); color: #fff;
         }
 
-        .lock-box button:hover { background-color: #155228; }
+        .lock-error { display: none; font-family: 'Arial', sans-serif; font-size: 13px; color: var(--red-600); margin-top: -6px; margin-bottom: 12px; }
 
-        .lock-error {
-            display: none;
-            font-family: 'Arial', sans-serif;
-            font-size: 13px;
-            color: #c0392b;
-            margin-top: -6px;
-            margin-bottom: 12px;
+        @media (max-width: 700px) {
+            .top-bar { padding: 12px 16px; }
+            .datetime-widget { margin-left: 0; width: 100%; text-align: left; padding-top: 6px; }
+            .container { margin: 20px auto; }
+            .field-row { flex-direction: column; gap: 0; }
+            .stats-row { flex-direction: column; }
         }
     </style>
 </head>
 <body class="no-scroll">
 
 <div class="top-bar">
-    <img src="https://i.ibb.co/qLk93D58/college-logo.jpg" alt="college emblem">
+    <img src="../Media/college_logo.jpg" alt="college emblem" onerror="this.style.display='none'">
     <div class="college-name">
         <h1>St. John's College</h1>
         <p>Notice Board — Admin</p>
@@ -459,60 +408,119 @@
 </div>
 
 <div class="container blurred" id="main-container">
-    <h2>Post an Announcement</h2>
 
-    <label for="ann-title">Title</label>
-    <input type="text" id="ann-title" placeholder="e.g. Sports Day Reminder">
-
-    <label for="ann-priority">Priority</label>
-    <select id="ann-priority">
-        <option value="normal" selected>Normal</option>
-        <option value="important">Important</option>
-        <option value="urgent">Urgent</option>
-    </select>
-
-    <label for="ann-body">Message (optional)</label>
-    <textarea id="ann-body" placeholder="Type the announcement text here..."></textarea>
-
-    <label for="ann-image">Image (optional)</label>
-    <input type="file" id="ann-image" accept="image/*">
-
-    <label for="ann-video">Video (optional)</label>
-    <input type="file" id="ann-video" accept="video/*">
-
-    <label for="ann-files">Attach files (optional, multiple allowed)</label>
-    <input type="file" id="ann-files" multiple>
-    <ul class="selected-files" id="ann-files-list"></ul>
-
-    <div class="btn-row">
-        <button class="btn-post" id="post-btn" onclick="postAnnouncement()">Post Announcement</button>
-        <button class="btn-clear" onclick="clearAll()">Clear All Announcements</button>
-        <button class="btn-view" onclick="window.open('../index.html','_blank')">View Notice Board</button>
-        <button class="btn-logout" onclick="logout()">Log Out</button>
+    <div class="stats-row" id="stats-row">
+        <div class="stat-card">
+            <div class="stat-value" id="stat-active">—</div>
+            <div class="stat-label">Active announcements</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-views-today">—</div>
+            <div class="stat-label">Views today</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-views-total">—</div>
+            <div class="stat-label">Views all-time</div>
+        </div>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <div class="panel">
+        <div class="qr-card">
+            <img id="qr-code" alt="QR code to the public notice board" onerror="this.style.display='none'">
+            <span>Scan or <a href="../index.html" target="_blank">open the public notice board</a> to preview what students see.</span>
+        </div>
+    </div>
 
-    <div class="posted-section">
+    <div class="panel">
+        <h2>Post an Announcement</h2>
+
+        <label for="ann-title">Title</label>
+        <input type="text" id="ann-title" placeholder="e.g. Sports Day Reminder">
+
+        <div class="field-row">
+            <div>
+                <label for="ann-category">Category</label>
+                <select id="ann-category"></select>
+            </div>
+            <div>
+                <label for="ann-priority">Priority</label>
+                <select id="ann-priority">
+                    <option value="normal" selected>Normal</option>
+                    <option value="important">Important</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
+        </div>
+
+        <label for="ann-body">Message (optional)</label>
+        <textarea id="ann-body" placeholder="Type the announcement text here..."></textarea>
+
+        <div class="suggestion-chip" id="suggestion-chip">
+            <span id="suggestion-text"></span>
+            <button type="button" id="suggestion-apply">Apply</button>
+        </div>
+
+        <label for="ann-expires">Auto-remove after this date (optional)</label>
+        <input type="date" id="ann-expires">
+
+        <label for="ann-image">Image (optional)</label>
+        <input type="file" id="ann-image" accept="image/*">
+
+        <label for="ann-video">Video (optional)</label>
+        <input type="file" id="ann-video" accept="video/*">
+
+        <label for="ann-files">Attach files (optional, multiple allowed)</label>
+        <input type="file" id="ann-files" multiple>
+        <ul class="selected-files" id="ann-files-list"></ul>
+
+        <div class="btn-row">
+            <button class="btn-post" id="post-btn" onclick="postAnnouncement()">Post Announcement</button>
+            <button class="btn-clear" onclick="clearAll()">Clear All Announcements</button>
+            <button class="btn-view" onclick="window.open('../index.html','_blank')">View Notice Board</button>
+            <button class="btn-logout" onclick="logout()">Log Out</button>
+        </div>
+
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <div class="posted-section panel">
         <h2>Currently Posted</h2>
         <div id="posted-list"><p class="no-announcements">Loading…</p></div>
     </div>
 </div>
 
-<!-- Supabase client library -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Shared config (Firebase keys, AI key placeholder, categories) -->
+<script src="../config.js"></script>
+<!-- Firebase (modular ESM, no build step) -->
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+        getFirestore, collection, addDoc, deleteDoc, doc, getDocs, query,
+        orderBy, where, getCountFromServer, serverTimestamp, Timestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import {
+        getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+        getStorage, ref, uploadBytes, getDownloadURL
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-<script>
-    /* ============================================================
-       SUPABASE CONFIG — must match index.html exactly
-       ============================================================ */
-    const SUPABASE_URL = 'https://qvdnogycmnbctfwcionn.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZG5vZ3ljbW5iY3Rmd2Npb25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzQ2NDgsImV4cCI6MjA5OTI1MDY0OH0.xg7TBLfsHY37GRNnHVvHXGPHHNbxOj9eMjR7MuyD0g8';
+    const CFG = window.APP_CONFIG;
+    let app = null, auth = null, db = null, storage = null;
 
-    let supabaseClient = null;
-    const BUCKET = 'announcement-images';
+    try {
+        app = initializeApp(CFG.FIREBASE_CONFIG);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        storage = getStorage(app);
+    } catch (initErr) {
+        console.error('Firebase init failed:', initErr);
+        const errorMsg = document.getElementById('lock-error');
+        errorMsg.textContent = 'Setup error: ' + initErr.message;
+        errorMsg.style.display = 'block';
+    }
 
-    /* --- Date / time widget (matches notice board page) --- */
+    /* --- Date / time widget --- */
     function ordinalSuffix(day) {
         if (day >= 11 && day <= 13) return 'th';
         switch (day % 10) {
@@ -541,17 +549,18 @@
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
-    try {
-        if (!window.supabase) {
-            throw new Error('Supabase library failed to load (check your internet connection or ad-blocker).');
-        }
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } catch (initErr) {
-        console.error('Supabase init failed:', initErr);
-        const errorMsg = document.getElementById('lock-error');
-        errorMsg.textContent = 'Setup error: ' + initErr.message;
-        errorMsg.style.display = 'block';
-    }
+    /* --- QR code to the public board --- */
+    (function setupQr() {
+        const img = document.getElementById('qr-code');
+        const publicUrl = new URL('../index.html', window.location.href).href;
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=6&data=${encodeURIComponent(publicUrl)}`;
+    })();
+
+    /* --- Populate category dropdown from shared config --- */
+    (function populateCategories() {
+        const sel = document.getElementById('ann-category');
+        sel.innerHTML = CFG.CATEGORIES.map(c => `<option value="${c.value}">${c.label}</option>`).join('');
+    })();
 
     /* --- Auth --- */
     async function checkLogin() {
@@ -562,8 +571,8 @@
 
         errorMsg.style.display = 'none';
 
-        if (!supabaseClient) {
-            errorMsg.textContent = 'Cannot log in: Supabase failed to initialize. Check the browser console (F12) for details.';
+        if (!auth) {
+            errorMsg.textContent = 'Cannot log in: Firebase failed to initialize. Check the browser console (F12) for details.';
             errorMsg.style.display = 'block';
             return;
         }
@@ -578,17 +587,11 @@
         btn.textContent = 'Logging in…';
 
         try {
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-            if (error) {
-                errorMsg.textContent = error.message;
-                errorMsg.style.display = 'block';
-                return;
-            }
+            await signInWithEmailAndPassword(auth, email, password);
             unlockUI();
         } catch (err) {
             console.error('Login error:', err);
-            errorMsg.textContent = 'Unexpected error: ' + err.message;
+            errorMsg.textContent = err.message;
             errorMsg.style.display = 'block';
         } finally {
             btn.disabled = false;
@@ -597,7 +600,7 @@
     }
 
     async function logout() {
-        await supabaseClient.auth.signOut();
+        await signOut(auth);
         location.reload();
     }
 
@@ -606,14 +609,15 @@
         document.getElementById('main-container').classList.remove('blurred');
         document.body.classList.remove('no-scroll');
         renderPosted();
+        renderStats();
     }
 
     // If already logged in (existing session), skip the lock screen
-    (async function checkExistingSession() {
-        if (!supabaseClient) return;
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session) unlockUI();
-    })();
+    if (auth) {
+        onAuthStateChanged(auth, user => {
+            if (user) unlockUI();
+        });
+    }
 
     document.getElementById('lock-password').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') checkLogin();
@@ -625,18 +629,79 @@
     /* --- Helpers --- */
     function escapeHtml(str) {
         const div = document.createElement('div');
-        div.textContent = str;
+        div.textContent = str == null ? '' : str;
         return div.innerHTML;
     }
 
-    function formatTimestamp(iso) {
-        const d = new Date(iso);
+    // Firestore stores created_at/expires_at as Timestamp objects (with a
+    // .toDate() method). Fall back to `new Date(v)` for plain strings/millis
+    // (e.g. a doc read back before serverTimestamp() has resolved).
+    function toJsDate(v) {
+        if (v && typeof v.toDate === 'function') return v.toDate();
+        return new Date(v);
+    }
+
+    function formatTimestamp(v) {
+        const d = toJsDate(v);
         return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
             + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     }
 
-    /* --- Track multiple attachment files (the native file input replaces its
-       whole FileList on every pick, so we keep our own running selection) --- */
+    function categoryLabel(value) {
+        const found = CFG.CATEGORIES.find(c => c.value === value);
+        return found ? found.label : 'General';
+    }
+
+    function isExpired(a) {
+        return a.expires_at && toJsDate(a.expires_at).getTime() < Date.now();
+    }
+
+    /* ============================================================
+       Lightweight keyword-based priority suggestion.
+       This is a simple heuristic today (no API key needed) — it can
+       later be swapped for a real AI classification call once
+       CFG.AI_API_KEY is filled in, using the same idea: send the
+       title+body to the model and ask it to pick normal/important/urgent.
+       ============================================================ */
+    const HIGH_SEVERITY_WORDS = ['emergency', 'danger', 'evacuate', 'lockdown', 'closed', 'cancelled', 'cancellation', 'safety alert'];
+    const MODERATE_WORDS = ['urgent', 'asap', 'reminder', 'deadline', 'due', 'today', 'tomorrow', 'last chance', 'final notice'];
+
+    function suggestPriority(text) {
+        const lower = text.toLowerCase();
+        if (HIGH_SEVERITY_WORDS.some(w => lower.includes(w))) return 'important';
+        if (MODERATE_WORDS.some(w => lower.includes(w))) return 'urgent';
+        return null;
+    }
+
+    let suggestionDebounce;
+    function checkSuggestion() {
+        clearTimeout(suggestionDebounce);
+        suggestionDebounce = setTimeout(() => {
+            const title = document.getElementById('ann-title').value;
+            const body = document.getElementById('ann-body').value;
+            const current = document.getElementById('ann-priority').value;
+            const suggestion = suggestPriority(`${title} ${body}`);
+            const chip = document.getElementById('suggestion-chip');
+
+            if (suggestion && suggestion !== current) {
+                document.getElementById('suggestion-text').textContent = `Suggested priority: ${suggestion === 'important' ? 'Important' : 'Urgent'}`;
+                chip.style.display = 'flex';
+                chip.dataset.value = suggestion;
+            } else {
+                chip.style.display = 'none';
+            }
+        }, 400);
+    }
+
+    document.getElementById('ann-title').addEventListener('input', checkSuggestion);
+    document.getElementById('ann-body').addEventListener('input', checkSuggestion);
+    document.getElementById('suggestion-apply').addEventListener('click', () => {
+        const chip = document.getElementById('suggestion-chip');
+        document.getElementById('ann-priority').value = chip.dataset.value;
+        chip.style.display = 'none';
+    });
+
+    /* --- Track multiple attachment files --- */
     let selectedFiles = [];
 
     function formatFileSize(bytes) {
@@ -680,22 +745,18 @@
     /* --- Post / delete / clear --- */
     async function uploadOne(file) {
         const ext = file.name.split('.').pop();
-        const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-        const { error: uploadError } = await supabaseClient.storage
-            .from(BUCKET)
-            .upload(path, file);
-        if (uploadError) throw uploadError;
-
-        const { data: publicUrlData } = supabaseClient.storage
-            .from(BUCKET)
-            .getPublicUrl(path);
-        return publicUrlData.publicUrl;
+        const path = `announcements/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const storageRef = ref(storage, path);
+        await uploadBytes(storageRef, file);
+        return await getDownloadURL(storageRef);
     }
 
     async function postAnnouncement() {
         const title = document.getElementById('ann-title').value.trim();
         const priority = document.getElementById('ann-priority').value;
+        const category = document.getElementById('ann-category').value;
         const body  = document.getElementById('ann-body').value.trim();
+        const expiresRaw = document.getElementById('ann-expires').value;
         const fileInput = document.getElementById('ann-image');
         const videoInput = document.getElementById('ann-video');
         const file = fileInput.files[0];
@@ -715,39 +776,55 @@
         const attachments = [];
 
         try {
-            if (file) {
-                postBtn.textContent = 'Uploading image…';
-                image_url = await uploadOne(file);
-            }
+            try {
+                if (file) {
+                    postBtn.textContent = 'Uploading image…';
+                    image_url = await uploadOne(file);
+                }
 
-            if (videoFile) {
-                postBtn.textContent = 'Uploading video…';
-                video_url = await uploadOne(videoFile);
-            }
+                if (videoFile) {
+                    postBtn.textContent = 'Uploading video…';
+                    video_url = await uploadOne(videoFile);
+                }
 
-            for (let i = 0; i < selectedFiles.length; i++) {
-                postBtn.textContent = `Uploading file ${i + 1} of ${selectedFiles.length}…`;
-                const url = await uploadOne(selectedFiles[i]);
-                attachments.push({ name: selectedFiles[i].name, url, size: selectedFiles[i].size });
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    postBtn.textContent = `Uploading file ${i + 1} of ${selectedFiles.length}…`;
+                    const url = await uploadOne(selectedFiles[i]);
+                    attachments.push({ name: selectedFiles[i].name, url, size: selectedFiles[i].size });
+                }
+            } catch (uploadErr) {
+                console.error('Upload failed:', uploadErr);
+                showToast('File upload failed — Firebase Storage may need to be enabed on the Blaze plan. You can still post text-only announcements.', false);
+                return;
             }
 
             postBtn.textContent = 'Posting…';
 
-            const { error: insertError } = await supabaseClient
-                .from('announcements')
-                .insert({ title: title || 'Announcement', body, image_url, video_url, attachments, priority });
-
-            if (insertError) throw insertError;
+            await addDoc(collection(db, 'announcements'), {
+                title: title || 'Announcement',
+                body,
+                image_url,
+                video_url,
+                attachments,
+                priority,
+                category,
+                created_at: serverTimestamp(),
+                expires_at: expiresRaw ? Timestamp.fromDate(new Date(expiresRaw + 'T23:59:59')) : null,
+            });
 
             showToast('Announcement posted successfully!');
             document.getElementById('ann-title').value = '';
             document.getElementById('ann-priority').value = 'normal';
+            document.getElementById('ann-category').value = 'general';
             document.getElementById('ann-body').value = '';
+            document.getElementById('ann-expires').value = '';
+            document.getElementById('suggestion-chip').style.display = 'none';
             fileInput.value = '';
             videoInput.value = '';
             selectedFiles = [];
             renderSelectedFiles();
             renderPosted();
+            renderStats();
         } catch (err) {
             console.error(err);
             showToast('Failed to post: ' + err.message, false);
@@ -758,36 +835,39 @@
     }
 
     async function deleteAnnouncement(id) {
-        const { error } = await supabaseClient.from('announcements').delete().eq('id', id);
-        if (error) {
+        try {
+            await deleteDoc(doc(db, 'announcements', id));
+        } catch (error) {
             showToast('Failed to delete: ' + error.message, false);
             return;
         }
         showToast('Announcement removed.');
         renderPosted();
+        renderStats();
     }
 
     async function clearAll() {
         if (!confirm('Remove all announcements from the notice board?')) return;
-        // delete-all: match every row (id is never null)
-        const { error } = await supabaseClient.from('announcements').delete().not('id', 'is', null);
-        if (error) {
+        try {
+            const snap = await getDocs(collection(db, 'announcements'));
+            await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+        } catch (error) {
             showToast('Failed to clear: ' + error.message, false);
             return;
         }
         showToast('All announcements cleared.');
         renderPosted();
+        renderStats();
     }
 
     async function renderPosted() {
         const list = document.getElementById('posted-list');
 
-        const { data, error } = await supabaseClient
-            .from('announcements')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) {
+        let data;
+        try {
+            const snap = await getDocs(query(collection(db, 'announcements'), orderBy('created_at', 'desc')));
+            data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        } catch (error) {
             list.innerHTML = `<p class="no-announcements">Error loading: ${escapeHtml(error.message)}</p>`;
             return;
         }
@@ -803,10 +883,13 @@
             const priorityClass = priority !== 'normal' ? ` priority-${priority}` : '';
             const priorityBadge = priority === 'important' ? '<span class="priority-badge badge-important">Important</span>'
                 : priority === 'urgent' ? '<span class="priority-badge badge-urgent">Urgent</span>' : '';
+            const catBadge = `<span class="category-badge">${escapeHtml(categoryLabel(a.category || 'general'))}</span>`;
+            const expiredBadge = isExpired(a) ? '<span class="expiry-badge">Expired (hidden from board)</span>'
+                : a.expires_at ? `<span class="expiry-badge">Removes ${toJsDate(a.expires_at).toLocaleDateString('en-GB')}</span>` : '';
             return `
             <div class="announcement-card${priorityClass}">
                 <button class="btn-delete" onclick="deleteAnnouncement('${a.id}')">Remove</button>
-                ${priorityBadge}
+                ${priorityBadge}${catBadge}${expiredBadge}
                 <div class="card-title">${escapeHtml(a.title)}</div>
                 ${a.body ? `<div class="card-body">${escapeHtml(a.body)}</div>` : ''}
                 ${a.image_url ? `<img class="thumb" src="${escapeHtml(a.image_url)}" alt="">` : ''}
@@ -820,6 +903,45 @@
         `;
         }).join('');
     }
+
+    /* --- Stats dashboard: active announcements + view counts ---
+       View counts read from the `board_views` collection. If that
+       collection/rule doesn't exist yet, the stat simply stays blank
+       instead of breaking the page. --- */
+    async function renderStats() {
+        try {
+            const snap = await getDocs(collection(db, 'announcements'));
+            const activeData = snap.docs.map(d => d.data());
+            const activeCount = activeData.filter(a => !isExpired(a)).length;
+            document.getElementById('stat-active').textContent = activeCount;
+        } catch (e) { /* leave as — */ }
+
+        try {
+            const since = new Date();
+            since.setHours(0, 0, 0, 0);
+            const todayQuery = query(
+                collection(db, 'board_views'),
+                where('created_at', '>=', Timestamp.fromDate(since))
+            );
+            const todaySnap = await getCountFromServer(todayQuery);
+            document.getElementById('stat-views-today').textContent = todaySnap.data().count ?? '—';
+        } catch (e) { /* board_views collection not set up yet */ }
+
+        try {
+            const totalSnap = await getCountFromServer(collection(db, 'board_views'));
+            document.getElementById('stat-views-total').textContent = totalSnap.data().count ?? '—';
+        } catch (e) { /* board_views collection not set up yet */ }
+    }
+
+    /* --- Expose handlers referenced from inline onclick="" attributes ---
+       Module scripts do not leak declarations into global scope, so
+       every function invoked via an inline onclick must be attached
+       to window explicitly. --- */
+    window.checkLogin = checkLogin;
+    window.logout = logout;
+    window.postAnnouncement = postAnnouncement;
+    window.clearAll = clearAll;
+    window.deleteAnnouncement = deleteAnnouncement;
 </script>
 </body>
 </html>

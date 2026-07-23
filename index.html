@@ -6,10 +6,43 @@
     <title>St. John's College Notice Board</title>
     <style>
 
+        /* ============================================================
+           COLOR SYSTEM — pulled from the school shield: green ground,
+           gold/olive trim & banner, sky-blue field, red flag accent.
+           ============================================================ */
+        :root {
+            --green-900: #0f3319;
+            --green-800: #1d6737;
+            --green-700: #237a41;
+            --green-600: #2c8f4d;
+            --gold-700:  #8a6a1a;
+            --gold-500:  #a6842c;
+            --gold-300:  #d4b568;
+            --gold-100:  #f2e8cf;
+            --sky-500:   #3aa1d6;
+            --sky-100:   #eaf6fc;
+            --cream-50:  #f7f5ee;
+            --cream-100: #efe8d8;
+            --ink-900:   #1b1b1b;
+            --ink-600:   #4a4a4a;
+            --ink-400:   #8a8a8a;
+            --red-600:   #d62b31;
+            --yellow-400:#f0d956;
+            --shadow-sm: 0 2px 6px rgba(15, 51, 25, 0.10);
+            --shadow-md: 0 6px 18px rgba(15, 51, 25, 0.16);
+            --shadow-lg: 0 10px 28px rgba(15, 51, 25, 0.22);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--cream-50);
+            font-family: 'Times New Roman', serif;
+            min-height: 100vh;
+        }
+
         h1 {
             font-family: 'Arial', sans-serif;
-            font-size: 24px;
-            margin-left: 16px;
             color: #ffffff;
             font-weight: bold;
             font-size: 34px;
@@ -18,46 +51,35 @@
 
         p1 {
             font-family: 'Times New Roman', serif;
-            font-size: 25px;
+            font-size: 22px;
             margin-left: 16px;
-            color: #ffffff;
+            color: var(--gold-100);
             white-space: nowrap;
             display: block;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #f9f9f9;
-        }
-
+        /* --- Top bar --- */
         .top-bar {
             width: 100%;
-            height: 100px;
-            background-color: #1d6737;
+            min-height: 100px;
+            background: linear-gradient(120deg, var(--green-900) 0%, var(--green-800) 55%, var(--green-700) 100%);
+            border-bottom: 4px solid var(--gold-500);
+            box-shadow: var(--shadow-md);
             display: flex;
             align-items: center;
-            padding: 0 16px;
+            flex-wrap: wrap;
+            padding: 10px 20px;
             gap: 16px;
-            overflow: hidden;
+            position: relative;
+            z-index: 5;
         }
 
         .top-bar img {
-            height: 85px;
-            width: 85px;
+            height: 78px;
+            width: 78px;
             object-fit: contain;
             flex-shrink: 0;
-        }
-
-        /* --- Time and Date --- */
-        body {
-        margin-left: 0px;
-        min-height: 100vh;
-        font-family: 'Times New Roman', serif;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
         }
 
         .college-name {
@@ -70,282 +92,720 @@
             flex-shrink: 0;
             white-space: nowrap;
             text-align: right;
-            padding-right: 16px;
+            padding-right: 8px;
         }
 
-
-
-        /* --- DATE  <h1> --- */
         h1#live-date {
-        font-size: 28px;
-        color: #ffffff;
-        white-space: nowrap;
-        margin-left: 0;
+            font-size: 26px;
+            color: #ffffff;
+            white-space: nowrap;
+            margin-left: 0;
         }
 
-        /* --- TIME  <p> --- */
         p#live-time {
-        font-size: 22px;
-        font-weight: 400;
-        color: #ffffff;
-        letter-spacing: 0.08em;
-        white-space: nowrap;
-        margin-left: 0;
+            font-family: 'Arial', sans-serif;
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--gold-100);
+            letter-spacing: 0.08em;
+            white-space: nowrap;
+            margin-left: 0;
         }
 
-        /* --- Page Layout --- */
+        /* --- Page layout --- */
         .page-layout {
             display: flex;
-            min-height: calc(100vh - 100px);
+            min-height: calc(100vh - 104px);
         }
 
         .main-content {
             flex: 2;
-            background-color: #f9f9f9;
-            height: calc(100vh - 100px);
+            position: relative;
+            background-color: var(--cream-50);
+            height: calc(100vh - 104px);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            isolation: isolate;
+        }
+
+        /* Faint shield watermark for depth/branding */
+        .main-content::before {
+            content: "";
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 460px;
+            height: 460px;
+            background-image: url('Media/emblem.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .sidebar-divider {
-            width: 4px;
-            background-color: #1d6737;
+            width: 5px;
+            background: linear-gradient(180deg, var(--gold-500), var(--green-800));
             flex-shrink: 0;
+            transition: width 0.6s ease, opacity 0.6s ease;
         }
 
         .sidebar {
             flex: 1;
-            background-color: #f9f9f9;
+            min-width: 0;
+            background-color: var(--cream-100);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            transition: flex 0.6s ease, opacity 0.6s ease;
+        }
+
+        /* While a reference slide (calendar/timetable) is showing, the
+           sidebar thumbnails are redundant — collapse it so the stage gets
+           the full page width, which is the entire point of giving the
+           calendar/timetable their own full-screen slide. Header, countdown
+           strip and status banner are outside .page-layout and stay put. */
+        .page-layout.showing-reference .sidebar {
+            flex: 0 0 0px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .page-layout.showing-reference .sidebar-divider {
+            width: 0;
+            opacity: 0;
+        }
+
+        /* The "Announcements" heading, live dot, last-synced text and the
+           progress dots are all decorative furniture for the announcement
+           stage — meaningless during a calendar/timetable slide, and every
+           pixel they take costs the crop legibility. Reclaim that space. */
+        .page-layout.showing-reference .announcements-heading-row,
+        .page-layout.showing-reference .slide-dots {
+            display: none;
+        }
+
+        .page-layout.showing-reference .announcements-area {
+            padding: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .sidebar, .sidebar-divider {
+                transition: none;
+            }
         }
 
         .sidebar-heading {
             font-family: 'Times New Roman', serif;
-            font-size: 25px;
-            color: #1d6737;
+            font-size: 24px;
+            color: var(--green-800);
             text-align: center;
-            padding: 16px 8px;
+            padding: 14px 8px 10px;
+            position: relative;
+        }
+
+        .sidebar-heading::after {
+            content: "";
+            display: block;
+            width: 64px;
+            height: 3px;
+            background: var(--gold-500);
+            margin: 8px auto 0;
+            border-radius: 2px;
         }
 
         .sidebar-image-container {
             width: 100%;
-            padding: 10px;
+            padding: 8px 14px;
             box-sizing: border-box;
-            max-height: 50%;
+            max-height: 46%;
         }
 
         .sidebar-image-container img {
             width: 100%;
             height: 100%;
-            max-height: calc(50vh - 50px);
+            max-height: calc(46vh - 60px);
             display: block;
             object-fit: contain;
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+            background: #fff;
         }
 
-        /* --- Announcements Area --- */
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top: 2px solid var(--gold-300);
+        }
+
+        .sidebar-footer img {
+            width: 76px;
+            height: 76px;
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+            background: #fff;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer .qr-caption {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            color: var(--ink-600);
+            line-height: 1.4;
+        }
+
+        /* --- Status banner (connection issues) --- */
+        .status-banner {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: var(--gold-100);
+            border-bottom: 2px solid var(--gold-500);
+            color: var(--ink-900);
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            padding: 8px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .status-banner button {
+            font-family: 'Arial', sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            background: var(--green-800);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 14px;
+            cursor: pointer;
+        }
+
+        /* --- Announcements area --- */
         .announcements-area {
-            padding: 20px;
+            padding: 18px 20px;
             display: flex;
             flex-direction: column;
             flex: 1;
             min-height: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .announcements-heading-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+            border-bottom: 3px solid var(--green-800);
+            padding-bottom: 8px;
+            margin-bottom: 14px;
+            flex-shrink: 0;
         }
 
         .announcements-heading {
             font-family: 'Times New Roman', serif;
             font-size: 26px;
-            color: #1d6737;
-            border-bottom: 3px solid #1d6737;
-            padding-bottom: 8px;
-            margin-bottom: 16px;
+            color: var(--green-800);
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green-600);
+            display: inline-block;
+            box-shadow: 0 0 0 rgba(44,143,77,0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%   { box-shadow: 0 0 0 0 rgba(44,143,77,0.55); }
+            70%  { box-shadow: 0 0 0 8px rgba(44,143,77,0); }
+            100% { box-shadow: 0 0 0 0 rgba(44,143,77,0); }
+        }
+
+        .last-synced {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            color: var(--ink-400);
+            margin-left: auto;
+        }
+
+        /* --- Coming up strip --- */
+        .countdown-strip {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--green-900);
+            color: var(--gold-100);
+            font-family: 'Arial', sans-serif;
+            padding: 10px 24px;
+            flex-wrap: wrap;
+            border-bottom: 3px solid var(--gold-500);
+            position: relative;
+            z-index: 4;
+        }
+
+        .countdown-strip.hidden { display: none; }
+
+        .countdown-label {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: clamp(12px, 1vw, 15px);
+            letter-spacing: 0.06em;
+            color: var(--gold-300);
             flex-shrink: 0;
         }
 
-        #announcements-list {
-            overflow-y: auto;
-            flex: 1;
-            min-height: 0;
-            scrollbar-width: none;       /* Firefox */
-            -ms-overflow-style: none;    /* IE/Edge */
+        .countdown-events {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
         }
 
-        #announcements-list::-webkit-scrollbar {
-            display: none;               /* Chrome/Safari */
+        .countdown-event {
+            font-size: clamp(14px, 1.3vw, 20px);
+        }
+
+        .countdown-event.major {
+            color: var(--gold-300);
+            font-weight: bold;
+        }
+
+        .countdown-event .when {
+            color: var(--gold-100);
+            opacity: 0.85;
+        }
+
+        .countdown-event.major .when {
+            color: var(--gold-300);
+        }
+
+        /* --- Announcement stage (rotation engine) --- */
+        #announcements-list {
+            overflow: hidden;
+            flex: 1;
+            min-height: 0;
+            position: relative;
         }
 
         .no-announcements {
             font-family: 'Times New Roman', serif;
-            font-size: 18px;
-            color: #888;
+            font-size: clamp(20px, 2.4vw, 40px);
+            color: var(--ink-400);
             text-align: center;
             margin-top: 40px;
         }
 
-        .announcement-card {
+        .slide {
+            position: absolute;
+            inset: 0;
             background-color: #ffffff;
-            border-left: 6px solid #1d6737;
-            border-radius: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            padding: 14px 18px;
+            border-left: 10px solid var(--green-800);
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+            padding: 28px clamp(20px, 3vw, 48px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .slide.visible {
+            opacity: 1;
+        }
+
+        .slide.priority-important {
+            border-left-color: var(--red-600);
+        }
+
+        .slide.priority-urgent {
+            border-left-color: var(--yellow-400);
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .slide {
+                transform: translateY(10px);
+                transition: opacity 0.6s ease, transform 0.6s ease;
+            }
+            .slide.visible {
+                transform: translateY(0);
+            }
+        }
+
+        .slide-top-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .slide-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-bottom: 14px;
-        }
-
-        .announcement-card.priority-important {
-            border-left-color: #d62b31;
-        }
-
-        .announcement-card.priority-urgent {
-            border-left-color: #f0d956;
+            flex-shrink: 0;
         }
 
         .priority-badge {
             display: inline-block;
             font-family: 'Arial', sans-serif;
-            font-size: 12px;
+            font-size: clamp(14px, 1.2vw, 20px);
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.03em;
-            padding: 3px 10px;
+            padding: 6px 16px;
             border-radius: 10px;
-            margin-bottom: 8px;
         }
 
         .priority-badge.badge-important {
-            background-color: #d62b31;
+            background-color: var(--red-600);
             color: #fff;
         }
 
         .priority-badge.badge-urgent {
-            background-color: #f0d956;
-            color: #4a3c00;
+            background-color: var(--yellow-400);
+            color: #3d3200;
         }
 
-        .announcement-card .card-title {
+        .category-badge {
+            display: inline-block;
             font-family: 'Arial', sans-serif;
-            font-size: 17px;
+            font-size: clamp(13px, 1vw, 18px);
             font-weight: bold;
-            color: #1d6737;
-            margin-bottom: 6px;
+            padding: 6px 16px;
+            border-radius: 10px;
+            background: var(--sky-100);
+            color: var(--sky-500);
+            border: 1px solid var(--sky-500);
         }
 
-        .announcement-card .card-image {
-            width: 100%;
-            max-height: 320px;
+        .slide .slide-title {
+            font-family: 'Arial', sans-serif;
+            font-size: clamp(32px, 4.2vw, 92px);
+            line-height: 1.15;
+            font-weight: bold;
+            color: var(--green-800);
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .slide-media {
+            flex-shrink: 0;
+            max-height: 40%;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .slide-media img,
+        .slide-media video {
+            max-width: 100%;
+            max-height: 100%;
             object-fit: contain;
             border-radius: 4px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .announcement-card .card-video {
-            width: 100%;
-            max-height: 360px;
-            border-radius: 4px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            display: block;
             background-color: #000;
         }
 
-        .announcement-card .card-attachments {
+        .slide-attachments {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 10px;
+            margin-top: 12px;
+            flex-shrink: 0;
         }
 
-        .announcement-card .attachment-link {
+        .slide .attachment-link {
             font-family: 'Arial', sans-serif;
-            font-size: 13px;
-            color: #1d6737;
-            background-color: #eef6f0;
-            border: 1px solid #1d6737;
+            font-size: clamp(13px, 1vw, 18px);
+            color: var(--ink-600);
+            background-color: var(--cream-100);
+            border: 1px solid var(--gold-300);
             border-radius: 4px;
-            padding: 5px 10px;
+            padding: 5px 12px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            pointer-events: none;
         }
 
-        .announcement-card .attachment-link:hover {
-            background-color: #1d6737;
-            color: #ffffff;
-        }
-
-        .announcement-card .card-body {
-            font-family: 'Times New Roman', serif;
-            font-size: 16px;
-            color: #222;
-            white-space: pre-wrap;
-            line-height: 1.5;
-        }
-
-        .announcement-card .card-meta {
+        .slide .slide-body {
             font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            color: #999;
-            margin-top: 8px;
+            font-size: clamp(20px, 2.1vw, 46px);
+            color: #1b1b1b;
+            white-space: pre-wrap;
+            line-height: 1.4;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            position: relative;
+            -webkit-mask-image: linear-gradient(to bottom, #000 85%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 85%, transparent 100%);
+        }
+
+        .slide .slide-meta {
+            font-family: 'Arial', sans-serif;
+            font-size: clamp(14px, 1.1vw, 24px);
+            color: var(--ink-400);
+            margin-top: 12px;
             text-align: right;
+            flex-shrink: 0;
+        }
+
+        .slide-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 0 4px;
+            flex-shrink: 0;
+        }
+
+        .slide-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--cream-100);
+            border: 1px solid var(--gold-300);
+        }
+
+        .slide-dot.active {
+            background: var(--green-800);
+            border-color: var(--green-800);
+        }
+
+        .slide-dot.slide-dot-ref {
+            border-radius: 3px;
+            background: var(--gold-300);
+            border-color: var(--gold-500);
+        }
+
+        .slide-dot.slide-dot-ref.active {
+            background: var(--gold-500);
+            border-color: var(--green-900);
+        }
+
+        /* --- Reference slides (full-screen calendar / timetable) --- */
+        .slide.slide-reference {
+            padding: 0;
+            border-left: 10px solid var(--gold-500);
+        }
+
+        .ref-header {
+            flex-shrink: 0;
+            background: linear-gradient(120deg, var(--green-900) 0%, var(--green-800) 100%);
+            border-bottom: 4px solid var(--gold-500);
+            padding: 8px clamp(20px, 3vw, 48px);
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px 20px;
+        }
+
+        .ref-label {
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            font-size: clamp(28px, 3.6vw, 62px);
+            color: var(--gold-300);
+            letter-spacing: 0.02em;
+        }
+
+        .ref-caption {
+            font-family: 'Arial', sans-serif;
+            font-size: clamp(16px, 1.6vw, 28px);
+            color: var(--gold-100);
+        }
+
+        .ref-image-wrap {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+            overflow: hidden;
+            background: #fdfcf5;
+            margin: clamp(12px, 1.6vw, 22px) clamp(20px, 3vw, 48px) clamp(20px, 3vw, 48px);
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Sized in JS to EXACTLY the cropped-region's on-screen dimensions
+           (not the wrapper's), so overflow:hidden here clips precisely at
+           the crop edges regardless of whether the fit was width-bound or
+           height-bound — the wrapper alone can't guarantee that once the
+           two are different sizes. */
+        .ref-image-crop-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            visibility: hidden;
+        }
+
+        .ref-image-crop-mask.ready {
+            visibility: visible;
+        }
+
+        .ref-image-crop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+        }
+
+        .ref-image-contain {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #fdfcf5;
+        }
+
+        /* --- Sidebar QR de-emphasis --- */
+        .sidebar-footer img {
+            width: 54px !important;
+            height: 54px !important;
+        }
+
+        .sidebar-footer .qr-caption {
+            color: var(--ink-400);
+            font-size: 11px;
+        }
+
+        /* ============================================================
+           RESPONSIVE — stack the board vertically on phones/tablets and
+           fall back to a plain scrollable list (no auto-advance).
+           ============================================================ */
+        @media (max-width: 900px) {
+            .page-layout { flex-direction: column; }
+            .main-content, .sidebar { height: auto; }
+            .main-content { min-height: 55vh; }
+            .sidebar-divider { width: 100%; height: 5px; }
+            .sidebar-image-container { max-height: none; }
+            .sidebar-image-container img { max-height: 260px; }
+            .datetime-widget { margin-left: 0; width: 100%; text-align: left; padding-top: 6px; }
+            .top-bar { padding: 12px 16px; }
+
+            #announcements-list {
+                overflow-y: auto;
+                display: block;
+            }
+            .slide {
+                position: static;
+                opacity: 1 !important;
+                transform: none !important;
+                display: none;
+                margin-bottom: 16px;
+                box-shadow: var(--shadow-sm);
+            }
+            .slide.phone-visible { display: flex; }
+            .slide-dots { display: none; }
+        }
+
+        @media (max-width: 480px) {
+            h1#live-date { font-size: 20px; }
+            p#live-time { font-size: 16px; }
+            .top-bar img { height: 56px; width: 56px; }
+            .top-bar h1 { font-size: 24px; }
+            p1 { font-size: 17px; margin-left: 12px; }
+            .announcements-heading { font-size: 21px; }
+            .slide .slide-title { font-size: 22px; }
+            .slide .slide-body { font-size: 16px; -webkit-mask-image: none; mask-image: none; overflow: visible; }
+            .slide .slide-meta { font-size: 12px; }
+            .countdown-events { gap: 14px; }
+            .countdown-event { font-size: 13px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-       <!-- IMPORTANT: Replace the src below with the public URL of your hosted college logo image -->
-       <img src="https://i.ibb.co/qLk93D58/college-logo.jpg" alt="college emblem" style="width:85px;height:85px;">
+    <header class="top-bar">
+       <img src="Media/college_logo.jpg" alt="college emblem" onerror="this.style.display='none'">
 
        <div class="college-name">
             <h1>St. John's College</h1>
-            <p1 style="margin-left: 16px;">Notice Board</p1>
+            <p1>Notice Board</p1>
        </div>
         <div class="datetime-widget">
             <h1 id="live-date">Loading date…</h1>
-            <p  id="live-time">Loading time…</p>
+            <p id="live-time">Loading time…</p>
         </div>
+    </header>
+
+    <div class="status-banner" id="status-banner">
+        <span id="status-banner-text">Having trouble reaching the notice board server…</span>
+        <button onclick="manualRetry()">Retry now</button>
     </div>
 
+    <nav class="countdown-strip hidden" id="countdown-strip" aria-label="Upcoming term dates">
+        <span class="countdown-label">Coming up</span>
+        <div class="countdown-events" id="countdown-events"></div>
+    </nav>
 
-  <div class="page-layout">
-      <div class="main-content">
+    <div class="page-layout">
+      <main class="main-content">
           <div class="announcements-area">
-              <h2 class="announcements-heading">Announcements</h2>
-              <div id="announcements-list">
+              <div class="announcements-heading-row">
+                  <h2 class="announcements-heading">Announcements</h2>
+                  <span class="live-dot" title="Live — updates automatically"></span>
+                  <span class="last-synced" id="last-synced"></span>
+              </div>
+
+              <div id="announcements-list" role="list" aria-live="polite">
                   <p class="no-announcements">Loading announcements…</p>
               </div>
+
+              <div class="slide-dots" id="slide-dots"></div>
           </div>
-      </div>
+      </main>
       <div class="sidebar-divider"></div>
-      <div class="sidebar">
+      <aside class="sidebar">
           <h2 id="sidebar-heading" class="sidebar-heading">Term Calendar</h2>
           <div class="sidebar-image-container">
-              <img src="https://i.ibb.co/1fXMrzY7/weeks.png" alt="Sidebar image" id="sidebar-image">
+              <img src="Media/weeks.png" alt="Term calendar" id="sidebar-image" onerror="this.parentElement.style.display='none'">
           </div>
           <h2 class="sidebar-heading">Co-Curricular Timetable</h2>
           <div class="sidebar-image-container">
-              <img src="https://i.ibb.co/kgykcqdq/Screenshot-2026-06-25-150932.png" alt="co-curricular">
+              <img src="https://i.ibb.co/kgykcqdq/Screenshot-2026-06-25-150932.png" alt="co-curricular" onerror="this.parentElement.style.display='none'">
           </div>
-      </div>
-  </div>
 
-  <!-- Supabase client library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+          <div class="sidebar-footer">
+              <img id="qr-code" alt="QR code to this notice board" onerror="this.style.display='none'">
+              <span class="qr-caption">Scan to open this notice board on your phone.</span>
+          </div>
+      </aside>
+    </div>
 
-  <script>
-    /* ============================================================
-       SUPABASE CONFIG — fill these in with your project's values
-       (Dashboard → Project Settings → API)
-       ============================================================ */
-    const SUPABASE_URL = 'https://qvdnogycmnbctfwcionn.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZG5vZ3ljbW5iY3Rmd2Npb25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzQ2NDgsImV4cCI6MjA5OTI1MDY0OH0.xg7TBLfsHY37GRNnHVvHXGPHHNbxOj9eMjR7MuyD0g8';
+    <!-- Shared config (Firebase keys, categories, term events, rotation) -->
+    <script src="config.js"></script>
+    <!-- Firebase (modular ESM, no build step) -->
+    <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getFirestore, collection, query, orderBy, getDocs, addDoc, serverTimestamp, onSnapshot
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const CFG = window.APP_CONFIG;
+    let app = null, db = null, firebaseInitFailed = false;
+    try {
+      app = initializeApp(CFG.FIREBASE_CONFIG);
+      db = getFirestore(app);
+    } catch (e) {
+      console.error('Firebase init failed:', e);
+      firebaseInitFailed = true;
+    }
 
-    /* --- Date / time widget (unchanged) --- */
+    /* --- Date / time widget --- */
     function ordinalSuffix(day) {
       if (day >= 11 && day <= 13) return 'th';
       switch (day % 10) {
@@ -374,15 +834,30 @@
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
-    /* --- Announcements: fetch from Supabase --- */
+    /* --- QR code (points at this page's own URL) --- */
+    (function setupQr() {
+      const img = document.getElementById('qr-code');
+      const url = encodeURIComponent(window.location.href);
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=6&data=${url}`;
+    })();
+
+    /* --- Helpers --- */
     function escapeHtml(str) {
       const div = document.createElement('div');
-      div.textContent = str;
+      div.textContent = str == null ? '' : str;
       return div.innerHTML;
     }
 
-    function formatTimestamp(iso) {
-      const d = new Date(iso);
+    // Firestore stores created_at/expires_at as Timestamp objects (with a
+    // .toDate() method). Fall back to `new Date(v)` for plain strings/millis
+    // (e.g. a doc read back before serverTimestamp() has resolved).
+    function toJsDate(v) {
+      if (v && typeof v.toDate === 'function') return v.toDate();
+      return new Date(v);
+    }
+
+    function formatTimestamp(v) {
+      const d = toJsDate(v);
       return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
         + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     }
@@ -394,165 +869,625 @@
       return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     }
 
-    async function loadAnnouncements() {
-      const list = document.getElementById('announcements-list');
+    function isExpired(a) {
+      return a.expires_at && toJsDate(a.expires_at).getTime() < Date.now();
+    }
 
-      const { data, error } = await supabaseClient
-        .from('announcements')
-        .select('*')
-        .order('created_at', { ascending: false });
+    function categoryLabel(value) {
+      const found = CFG.CATEGORIES.find(c => c.value === value);
+      return found ? found.label : 'General';
+    }
 
-      if (error) {
-        console.error('Error loading announcements:', error);
+    let rawAnnouncements = [];
+
+    /* --- Coming up strip (term calendar countdown) --- */
+    function startOfLocalDay(d) {
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    }
+
+    function nextEvents() {
+      const today = startOfLocalDay(new Date());
+      const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const events = (CFG.TERM_EVENTS || [])
+        .map(ev => {
+          const parts = ev.date.split('-').map(Number);
+          const evDate = new Date(parts[0], parts[1] - 1, parts[2]);
+          const evTime = startOfLocalDay(evDate);
+          const dayDelta = Math.round((evTime - today) / 86400000);
+          return { ...ev, dayDelta, dayName: dayNames[evDate.getDay()] };
+        })
+        .filter(ev => ev.dayDelta >= 0)
+        .sort((a, b) => a.dayDelta - b.dayDelta);
+      return events.slice(0, 2);
+    }
+
+    function phraseDelta(ev) {
+      if (ev.dayDelta === 0) return 'Today';
+      if (ev.dayDelta === 1) return 'Tomorrow';
+      if (ev.dayDelta >= 2 && ev.dayDelta <= 6) return 'this ' + ev.dayName;
+      return `in ${ev.dayDelta} days`;
+    }
+
+    function renderCountdownStrip() {
+      const strip = document.getElementById('countdown-strip');
+      const wrap = document.getElementById('countdown-events');
+      const events = nextEvents();
+      if (events.length === 0) {
+        strip.classList.add('hidden');
+        wrap.innerHTML = '';
         return;
       }
+      strip.classList.remove('hidden');
+      wrap.innerHTML = events.map(ev => `
+        <span class="countdown-event${ev.major ? ' major' : ''}">${escapeHtml(ev.label)} <span class="when">· ${escapeHtml(phraseDelta(ev))}</span></span>
+      `).join('');
+    }
 
-      if (!data || data.length === 0) {
-        list.innerHTML = '<p class="no-announcements">No announcements posted yet.</p>';
-        stopAutoScroll();
-        return;
+    let midnightTimer = null;
+    function scheduleMidnightRecompute() {
+      clearTimeout(midnightTimer);
+      const now = new Date();
+      const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+      const ms = nextMidnight.getTime() - now.getTime();
+      midnightTimer = setTimeout(() => {
+        renderCountdownStrip();
+        scheduleMidnightRecompute();
+      }, ms);
+    }
+    scheduleMidnightRecompute();
+
+    /* --- Rotation engine (replaces the old scrolling list) --- */
+    let playlist = [];
+    let currentIndex = 0;
+    let rotationToken = 0;
+    let rotationTimer = null;
+    let rotationPausedByVisibility = false;
+    let currentSlideEl = null;
+
+    function priorityWeight(priority) {
+      if (priority === 'urgent') return 3;
+      if (priority === 'important') return 2;
+      return 1;
+    }
+
+    /* --- Reference slides (full-screen calendar / timetable) ---
+       Playlist entries are now typed: { kind: 'announcement', data } for
+       ordinary posts, or { kind: 'calendar', band } / { kind: 'timetable' }
+       for the periodic full-screen reference slides. `referenceFailed`
+       remembers which reference image(s) errored out this session so a
+       broken/unreachable image is dropped from future builds instead of
+       reappearing every cycle. */
+    const REF = CFG.REFERENCE_SLIDES || null;
+    const referenceFailed = { calendar: false, timetable: false };
+    let calendarSkipLogged = false;
+    let currentCalendarBand = null;
+
+    function parseLocalDate(str) {
+      const parts = str.split('-').map(Number);
+      return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    function findCalendarBand() {
+      if (!REF || !REF.calendar || !Array.isArray(REF.calendar.weeks)) return null;
+      const today = startOfLocalDay(new Date());
+      for (const w of REF.calendar.weeks) {
+        const from = startOfLocalDay(parseLocalDate(w.from));
+        const to = startOfLocalDay(parseLocalDate(w.to));
+        if (today >= from && today <= to) return w;
       }
-
-      list.innerHTML = data.map(a => {
-        const attachments = Array.isArray(a.attachments) ? a.attachments : [];
-        const priority = a.priority || 'normal';
-        const priorityClass = priority !== 'normal' ? ` priority-${priority}` : '';
-        const priorityBadge = priority === 'important' ? '<span class="priority-badge badge-important">Important</span>'
-          : priority === 'urgent' ? '<span class="priority-badge badge-urgent">Urgent</span>' : '';
-        return `
-        <div class="announcement-card${priorityClass}">
-          ${priorityBadge}
-          <div class="card-title">${escapeHtml(a.title || 'Announcement')}</div>
-          ${a.body ? `<div class="card-body">${escapeHtml(a.body)}</div>` : ''}
-          ${a.image_url ? `<img class="card-image" src="${escapeHtml(a.image_url)}" alt="">` : ''}
-          ${a.video_url ? `<video class="card-video" src="${escapeHtml(a.video_url)}" controls preload="metadata"></video>` : ''}
-          ${attachments.length ? `
-            <div class="card-attachments">
-              ${attachments.map(f => `
-                <a class="attachment-link" href="${escapeHtml(f.url)}" target="_blank" rel="noopener">
-                  📎 ${escapeHtml(f.name || 'file')}${f.size ? ` (${formatFileSize(f.size)})` : ''}
-                </a>
-              `).join('')}
-            </div>` : ''}
-          <div class="card-meta">Posted: ${formatTimestamp(a.created_at)}</div>
-        </div>
-      `;
-      }).join('');
-
-      restartAutoScroll();
+      return null;
     }
 
-    /* --- Auto-scroll (unchanged logic) --- */
-    let autoScrollActive = false;
-    let autoScrollToken = 0;
-    let scrollAnimFrame = null;
-    let scrollTimer = null;
-
-    const AUTOSCROLL_PAUSE_MS = 3000;
-    const AUTOSCROLL_SPEED_PX_PER_SEC = 35;
-
-    function stopAutoScroll() {
-      autoScrollActive = false;
-      autoScrollToken++;
-      if (scrollAnimFrame) cancelAnimationFrame(scrollAnimFrame);
-      if (scrollTimer) clearTimeout(scrollTimer);
-      scrollAnimFrame = null;
-      scrollTimer = null;
-    }
-
-    function restartAutoScroll() {
-      stopAutoScroll();
-      autoScrollActive = true;
-      const myToken = autoScrollToken;
-      runAutoScrollLoop(myToken);
-    }
-
-    function wait(ms, token) {
-      return new Promise(resolve => {
-        scrollTimer = setTimeout(() => {
-          if (token === autoScrollToken) resolve();
-        }, ms);
-      });
-    }
-
-    function animateScrollTo(el, target, token) {
-      return new Promise(resolve => {
-        const start = el.scrollTop;
-        const distance = target - start;
-        if (Math.abs(distance) < 1) { resolve(); return; }
-        const duration = Math.max((Math.abs(distance) / AUTOSCROLL_SPEED_PX_PER_SEC) * 1000, 400);
-        const startTime = performance.now();
-
-        function step(now) {
-          if (token !== autoScrollToken) return;
-          const progress = Math.min((now - startTime) / duration, 1);
-          el.scrollTop = start + distance * progress;
-          if (progress < 1) {
-            scrollAnimFrame = requestAnimationFrame(step);
-          } else {
-            resolve();
+    function buildReferenceSlide(kind) {
+      if (!REF || referenceFailed[kind]) return null;
+      if (kind === 'calendar') {
+        const band = findCalendarBand();
+        if (!band) {
+          if (!calendarSkipLogged) {
+            calendarSkipLogged = true;
+            console.info('REFERENCE_SLIDES.calendar.weeks has no band covering today’s date — skipping the calendar slide. Update config.js for the current term.');
           }
+          return null;
         }
-        scrollAnimFrame = requestAnimationFrame(step);
-      });
+        return { kind: 'calendar', band };
+      }
+      if (kind === 'timetable' && REF.timetable) {
+        return { kind: 'timetable' };
+      }
+      return null;
     }
 
-    async function runAutoScrollLoop(token) {
-      const el = document.getElementById('announcements-list');
-      if (!el) return;
+    function buildPlaylist() {
+      const active = rawAnnouncements.filter(a => !isExpired(a));
 
-      while (token === autoScrollToken) {
-        const maxScroll = el.scrollHeight - el.clientHeight;
+      // Build weight-buckets: bucket[k] holds every item that should appear
+      // for at least the (k+1)th time, then round-robin across buckets so
+      // repeats of the same post are spread across the cycle.
+      const maxWeight = 3;
+      const buckets = [];
+      for (let k = 0; k < maxWeight; k++) {
+        buckets.push(active.filter(a => priorityWeight(a.priority || 'normal') > k));
+      }
+      const announcementSlides = [];
+      for (let k = 0; k < maxWeight; k++) {
+        for (const a of buckets[k]) announcementSlides.push({ kind: 'announcement', data: a });
+      }
 
-        if (maxScroll <= 5) {
-          await wait(1500, token);
-          continue;
+      if (!REF) return announcementSlides;
+
+      // No announcements at all: rotate purely between whichever reference
+      // slides are available, instead of showing an empty stage.
+      if (announcementSlides.length === 0) {
+        const refs = [];
+        const cal = buildReferenceSlide('calendar');
+        if (cal) refs.push(cal);
+        const tt = buildReferenceSlide('timetable');
+        if (tt) refs.push(tt);
+        return refs;
+      }
+
+      const everyN = REF.everyNSlides || 5;
+      const refKinds = ['calendar', 'timetable'];
+      let refCycleIdx = 0;
+      function nextRefSlide() {
+        for (let attempt = 0; attempt < refKinds.length; attempt++) {
+          const kind = refKinds[refCycleIdx % refKinds.length];
+          refCycleIdx++;
+          const slide = buildReferenceSlide(kind);
+          if (slide) return slide;
         }
+        return null;
+      }
 
-        await wait(AUTOSCROLL_PAUSE_MS, token);
-        if (token !== autoScrollToken) return;
+      const result = [];
+      let sinceLastRef = 0;
+      for (const slide of announcementSlides) {
+        result.push(slide);
+        sinceLastRef++;
+        if (sinceLastRef >= everyN) {
+          const ref = nextRefSlide();
+          if (ref) result.push(ref);
+          sinceLastRef = 0;
+        }
+      }
+      return result;
+    }
 
-        await animateScrollTo(el, el.scrollHeight - el.clientHeight, token);
-        if (token !== autoScrollToken) return;
+    function renderPhoneList() {
+      // Small-screen fallback: plain scrollable list, no auto-advance.
+      const list = document.getElementById('announcements-list');
+      const active = rawAnnouncements.filter(a => !isExpired(a));
+      if (active.length === 0) {
+        list.innerHTML = '<p class="no-announcements">No announcements right now.</p>';
+        return;
+      }
+      list.innerHTML = active.map(a => slideHtml(a, true)).join('');
+    }
 
-        await wait(AUTOSCROLL_PAUSE_MS, token);
-        if (token !== autoScrollToken) return;
+    function slideHtml(a, phoneVisible) {
+      const attachments = Array.isArray(a.attachments) ? a.attachments : [];
+      const priority = a.priority || 'normal';
+      const priorityClass = priority !== 'normal' ? ` priority-${priority}` : '';
+      const priorityBadge = priority === 'important' ? '<span class="priority-badge badge-important">Important</span>'
+        : priority === 'urgent' ? '<span class="priority-badge badge-urgent">Urgent</span>' : '';
+      const catBadge = `<span class="category-badge">${escapeHtml(categoryLabel(a.category || 'general'))}</span>`;
+      return `
+      <article class="slide${priorityClass}${phoneVisible ? ' phone-visible' : ''}" role="listitem">
+        <div class="slide-badges">${priorityBadge}${catBadge}</div>
+        <div class="slide-title">${escapeHtml(a.title || 'Announcement')}</div>
+        ${(a.image_url || a.video_url) ? `
+          <div class="slide-media">
+            ${a.image_url ? `<img src="${escapeHtml(a.image_url)}" alt="">` : ''}
+            ${a.video_url ? `<video src="${escapeHtml(a.video_url)}" muted autoplay loop playsinline></video>` : ''}
+          </div>` : ''}
+        ${a.body ? `<div class="slide-body">${escapeHtml(a.body)}</div>` : ''}
+        ${attachments.length ? `
+          <div class="slide-attachments">
+            ${attachments.map(f => `
+              <a class="attachment-link" href="${escapeHtml(f.url)}" target="_blank" rel="noopener" tabindex="-1">
+                📎 ${escapeHtml(f.name || 'file')}${f.size ? ` (${formatFileSize(f.size)})` : ''}
+              </a>
+            `).join('')}
+          </div>` : ''}
+        <div class="slide-meta">Posted: ${formatTimestamp(a.created_at)}</div>
+      </article>
+    `;
+    }
 
-        await animateScrollTo(el, 0, token);
+    function renderDots() {
+      const dotsWrap = document.getElementById('slide-dots');
+      if (!playlist.length) {
+        dotsWrap.innerHTML = '';
+        return;
+      }
+      dotsWrap.innerHTML = playlist.map((p, i) => {
+        const refClass = p.kind !== 'announcement' ? ' slide-dot-ref' : '';
+        return `<span class="slide-dot${i === currentIndex ? ' active' : ''}${refClass}"></span>`;
+      }).join('');
+    }
+
+    function stopRotation() {
+      rotationToken++;
+      if (rotationTimer) clearTimeout(rotationTimer);
+      rotationTimer = null;
+    }
+
+    /* --- Reference slide markup + image fitting --- */
+    function formatBandCaption(band) {
+      const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const monthNames = ['January','February','March','April','May','June',
+                          'July','August','September','October','November','December'];
+      const from = parseLocalDate(band.from);
+      const to = parseLocalDate(band.to);
+      const fromStr = `${dayNames[from.getDay()]} ${from.getDate()}`;
+      const toStr = `${dayNames[to.getDay()]} ${to.getDate()}`;
+      if (from.getMonth() === to.getMonth()) {
+        return `Week of ${fromStr} – ${toStr} ${monthNames[to.getMonth()]}`;
+      }
+      return `Week of ${fromStr} ${monthNames[from.getMonth()]} – ${toStr} ${monthNames[to.getMonth()]}`;
+    }
+
+    function referenceSlideHtml(entry) {
+      if (entry.kind === 'calendar') {
+        const cfg = REF.calendar;
+        const caption = formatBandCaption(entry.band);
+        return `
+        <article class="slide slide-reference" role="listitem">
+          <div class="ref-header">
+            <span class="ref-label">${escapeHtml(cfg.label)}</span>
+            <span class="ref-caption">${escapeHtml(caption)}</span>
+          </div>
+          <div class="ref-image-wrap" data-kind="calendar">
+            <div class="ref-image-crop-mask">
+              <img class="ref-image-crop" src="${escapeHtml(cfg.src)}" alt="${escapeHtml(cfg.label)}">
+            </div>
+          </div>
+        </article>`;
+      }
+      const cfg = REF.timetable;
+      return `
+      <article class="slide slide-reference" role="listitem">
+        <div class="ref-header">
+          <span class="ref-label">${escapeHtml(cfg.label)}</span>
+        </div>
+        <div class="ref-image-wrap" data-kind="timetable">
+          <img class="ref-image-contain" src="${escapeHtml(cfg.src)}" alt="${escapeHtml(cfg.label)}">
+        </div>
+      </article>`;
+    }
+
+    /* Crops to EXACTLY the crop rectangle: an inner mask is sized to the
+       cropped region's on-screen dimensions (dispCropW x dispCropH) and
+       centred in the wrapper; the full-size image sits inside it, shifted
+       up by the crop's vertical offset. Because the mask — not the
+       wrapper — is what's clipped, the trimmed-off detail column (and any
+       vertical excess) is clipped exactly at the crop edge whether the fit
+       ends up width-bound or height-bound. */
+    function layoutCalendarImage() {
+      const wrap = document.querySelector('.ref-image-wrap[data-kind="calendar"]');
+      if (!wrap || !currentCalendarBand) return;
+      const mask = wrap.querySelector('.ref-image-crop-mask');
+      const img = wrap.querySelector('img');
+      if (!mask || !img || !img.naturalWidth || !img.naturalHeight) return;
+      const cfg = REF.calendar;
+      const band = currentCalendarBand;
+      const nw = img.naturalWidth, nh = img.naturalHeight;
+      const cropW = nw * cfg.cropRight;
+      const cropH = nh * (band.bottom - band.top);
+      const availW = wrap.clientWidth;
+      const availH = wrap.clientHeight;
+      if (!availW || !availH || !cropW || !cropH) return;
+
+      let scale = availW / cropW;
+      if (cropH * scale > availH) scale = availH / cropH;
+
+      const dispCropW = cropW * scale;
+      const dispCropH = cropH * scale;
+      const offsetX = (availW - dispCropW) / 2;
+      const offsetY = (availH - dispCropH) / 2;
+
+      mask.style.width = dispCropW + 'px';
+      mask.style.height = dispCropH + 'px';
+      mask.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+
+      img.style.width = (nw * scale) + 'px';
+      img.style.height = (nh * scale) + 'px';
+      img.style.transform = `translate(0px, ${-(band.top * nh * scale)}px)`;
+
+      mask.classList.add('ready');
+    }
+
+    /* Sidebar collapse for full-width reference slides (defect fix: the
+       stage previously stayed at flex:2 of the row, so the calendar text
+       never got bigger than ~13px — the whole point of the feature was
+       lost). Collapsing is done via a class toggle in normal flow, not an
+       overlay, so the header/countdown/status banner are untouched. */
+    function setSidebarCollapsed(collapsed) {
+      const layout = document.querySelector('.page-layout');
+      if (!layout) return;
+      layout.classList.toggle('showing-reference', collapsed);
+    }
+
+    /* Runs cb() once the sidebar's collapse/expand transition has actually
+       finished (so layoutCalendarImage() measures the FINAL width, not the
+       pre-collapse width) — via transitionend, with a small timeout
+       fallback for the reduced-motion (transition: none, no event fires)
+       and "already collapsed, no transition triggered" cases. */
+    function afterSidebarSettled(cb) {
+      const sidebar = document.querySelector('.sidebar');
+      if (!sidebar) { requestAnimationFrame(cb); return; }
+      const duration = parseFloat(getComputedStyle(sidebar).transitionDuration) || 0;
+      if (duration === 0) { requestAnimationFrame(cb); return; }
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        sidebar.removeEventListener('transitionend', onEnd);
+        cb();
+      };
+      const onEnd = (e) => { if (e.target === sidebar) finish(); };
+      sidebar.addEventListener('transitionend', onEnd);
+      setTimeout(finish, duration * 1000 + 100);
+    }
+
+    /* Fires onReady() once the image's natural size is known, or onFail()
+       if it errors — covering both the fresh-load case and the
+       already-cached (img.complete === true) case. */
+    function handleImgReady(img, onReady, onFail) {
+      if (img.complete) {
+        if (img.naturalWidth) onReady(); else onFail();
+        return;
+      }
+      img.addEventListener('load', () => {
+        if (img.naturalWidth) onReady(); else onFail();
+      }, { once: true });
+      img.addEventListener('error', onFail, { once: true });
+    }
+
+    function setupReferenceSlide(entry, token) {
+      const wrap = document.querySelector(`.ref-image-wrap[data-kind="${entry.kind}"]`);
+      if (!wrap) return;
+      const img = wrap.querySelector('img');
+      if (!img) return;
+
+      const fail = () => {
+        if (token !== rotationToken) return;
+        referenceFailed[entry.kind] = true;
+        console.info(`Reference slide "${entry.kind}" image failed to load — dropping it from the rotation.`);
+        playlist = playlist.filter(p => p.kind !== entry.kind);
+        if (rotationTimer) clearTimeout(rotationTimer);
+        showSlide(currentIndex, token);
+      };
+
+      if (entry.kind === 'calendar') {
+        currentCalendarBand = entry.band;
+        // Layout must run AFTER the sidebar collapse transition has
+        // finished (not just after the image loads) — otherwise the crop
+        // scale gets computed against the old, narrower stage width.
+        handleImgReady(img, () => afterSidebarSettled(layoutCalendarImage), fail);
+      } else {
+        handleImgReady(img, () => {}, fail);
       }
     }
 
-    (function attachAutoScrollPauseHandlers() {
-      const el = document.getElementById('announcements-list');
-      if (!el) return;
-      ['mouseenter', 'touchstart', 'wheel'].forEach(evt => {
-        el.addEventListener(evt, stopAutoScroll, { passive: true });
-      });
-      ['mouseleave', 'touchend'].forEach(evt => {
-        el.addEventListener(evt, restartAutoScroll, { passive: true });
-      });
-    })();
+    function showSlide(i, token) {
+      const list = document.getElementById('announcements-list');
+      if (playlist.length === 0) {
+        setSidebarCollapsed(false);
+        list.innerHTML = '<p class="no-announcements">No announcements right now.</p>';
+        currentSlideEl = null;
+        renderDots();
+        return;
+      }
 
-    let resizeDebounce;
-    window.addEventListener('resize', function() {
-      clearTimeout(resizeDebounce);
-      resizeDebounce = setTimeout(restartAutoScroll, 300);
+      currentIndex = ((i % playlist.length) + playlist.length) % playlist.length;
+      const entry = playlist[currentIndex];
+
+      let delay;
+      if (entry.kind === 'announcement') {
+        setSidebarCollapsed(false);
+        list.innerHTML = slideHtml(entry.data, false);
+        currentSlideEl = list.querySelector('.slide');
+        const priority = entry.data.priority || 'normal';
+        delay = (CFG.ROTATION && CFG.ROTATION[priority]) || (CFG.ROTATION && CFG.ROTATION.normal) || 12000;
+      } else {
+        setSidebarCollapsed(true);
+        list.innerHTML = referenceSlideHtml(entry);
+        currentSlideEl = list.querySelector('.slide');
+        delay = (REF && REF.dwellMs) || (CFG.ROTATION && CFG.ROTATION.normal) || 12000;
+        setupReferenceSlide(entry, token);
+      }
+
+      renderDots();
+
+      // Fade in on next frame.
+      requestAnimationFrame(() => {
+        if (token !== rotationToken) return;
+        if (currentSlideEl) currentSlideEl.classList.add('visible');
+      });
+
+      if (rotationTimer) clearTimeout(rotationTimer);
+      rotationTimer = setTimeout(() => {
+        if (token !== rotationToken) return;
+        if (document.hidden) { rotationPausedByVisibility = true; return; }
+        advanceRotation(token);
+      }, delay);
+    }
+
+    function advanceRotation(token) {
+      if (token !== rotationToken) return;
+      showSlide(currentIndex + 1, token);
+    }
+
+    function startRotation(resumeId, resumeKind) {
+      stopRotation();
+      const myToken = rotationToken;
+      playlist = buildPlaylist();
+
+      let startIndex = 0;
+      if (resumeId != null) {
+        const found = playlist.findIndex(p => p.kind === 'announcement' && p.data.id === resumeId);
+        if (found >= 0) startIndex = found;
+      } else if (resumeKind) {
+        const found = playlist.findIndex(p => p.kind === resumeKind);
+        if (found >= 0) startIndex = found;
+      }
+
+      showSlide(startIndex, myToken);
+    }
+
+    window.addEventListener('resize', () => {
+      const current = playlist[currentIndex];
+      if (current && current.kind === 'calendar') layoutCalendarImage();
     });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) return;
+      if (rotationPausedByVisibility) {
+        rotationPausedByVisibility = false;
+        advanceRotation(rotationToken);
+      }
+    });
+
+    /* --- Render announcement stage from already-fetched data --- */
+    function renderList() {
+      if (window.matchMedia('(max-width: 900px)').matches) {
+        stopRotation();
+        setSidebarCollapsed(false); // reference-slide collapse never applies on the phone fallback
+        renderPhoneList();
+        return;
+      }
+      const current = playlist[currentIndex];
+      if (current && current.kind === 'announcement') {
+        startRotation(current.data.id, null);
+      } else if (current) {
+        startRotation(null, current.kind);
+      } else {
+        startRotation(null, null);
+      }
+    }
+
+    let isPhoneMode = window.matchMedia('(max-width: 900px)').matches;
+    let resizeDebounce;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeDebounce);
+      resizeDebounce = setTimeout(() => {
+        const nowPhone = window.matchMedia('(max-width: 900px)').matches;
+        if (nowPhone === isPhoneMode) return; // breakpoint not crossed — leave the running rotation alone
+        isPhoneMode = nowPhone;
+        renderList();
+      }, 300);
+    });
+
+    /* --- Status banner / retry handling --- */
+    let retryDelay = 5000;
+    let retryTimer = null;
+
+    function showStatusBanner(msg) {
+      const banner = document.getElementById('status-banner');
+      document.getElementById('status-banner-text').textContent = msg;
+      banner.style.display = 'flex';
+    }
+
+    function hideStatusBanner() {
+      document.getElementById('status-banner').style.display = 'none';
+      retryDelay = 5000;
+    }
+
+    function scheduleRetry() {
+      clearTimeout(retryTimer);
+      retryTimer = setTimeout(loadAnnouncements, retryDelay);
+      retryDelay = Math.min(retryDelay * 2, 30000);
+    }
+
+    function manualRetry() {
+      clearTimeout(retryTimer);
+      retryDelay = 5000;
+      loadAnnouncements();
+    }
+
+    /* --- Cheap signature of the fetched set, so a poll that returns
+       unchanged data doesn't rebuild the stage and reset the dwell timer.
+       Includes each item's current isExpired() result so a post expiring
+       mid-run still counts as a change even though its row data didn't. --- */
+    let lastDataSignature = null;
+
+    function computeDataSignature(list) {
+      return list.length + '#' + list.map(a =>
+        `${a.id}:${toJsDate(a.updated_at || a.created_at).getTime()}:${isExpired(a) ? 'x' : 'o'}`
+      ).join('|');
+    }
+
+    /* --- Fetch from Firestore --- */
+    async function loadAnnouncements() {
+      if (firebaseInitFailed || !db) {
+        showStatusBanner('Notice board failed to start (Firebase did not load). Retrying…');
+        scheduleRetry();
+        return;
+      }
+
+      let incoming;
+      try {
+        const snap = await getDocs(query(collection(db, 'announcements'), orderBy('created_at', 'desc')));
+        incoming = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      } catch (error) {
+        console.error('Error loading announcements:', error);
+        showStatusBanner('Could not reach the notice board server. Showing the last known list.');
+        scheduleRetry();
+        return;
+      }
+
+      hideStatusBanner();
+      const signature = computeDataSignature(incoming);
+      rawAnnouncements = incoming;
+      renderCountdownStrip();
+      if (signature !== lastDataSignature) {
+        lastDataSignature = signature;
+        renderList();
+      }
+      document.getElementById('last-synced').textContent = 'Last updated ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    /* --- Silent view counter (insert-only; nothing is read back here) --- */
+    (async function logView() {
+      if (firebaseInitFailed || !db) return;
+      try {
+        await addDoc(collection(db, 'board_views'), { created_at: serverTimestamp() });
+      } catch (e) {
+        // Non-critical — the collection may not exist/be permitted yet if
+        // the Firestore setup hasn't been run. Fail silently so the board
+        // still works.
+      }
+    })();
 
     /* --- Initial load --- */
     loadAnnouncements();
 
-    /* --- Live sync: Supabase Realtime pushes changes instantly --- */
-    supabaseClient
-      .channel('announcements-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'announcements' }, () => {
-        loadAnnouncements();
-      })
-      .subscribe();
+    /* --- Live sync: Firestore onSnapshot pushes changes instantly.
+       Kept as a lightweight "something changed" trigger — loadAnnouncements()
+       remains the single source of truth that fetches, signature-gates and
+       renders, so all the retry/backoff logic stays in one place. --- */
+    if (!firebaseInitFailed && db) {
+      onSnapshot(
+        query(collection(db, 'announcements'), orderBy('created_at', 'desc')),
+        () => {
+          loadAnnouncements();
+        },
+        (error) => {
+          console.error('Realtime listener error:', error);
+          showStatusBanner('Could not reach the notice board server. Showing the last known list.');
+          scheduleRetry();
+        }
+      );
+    }
 
     /* --- Fallback poll every 15s in case a realtime event is missed --- */
     setInterval(loadAnnouncements, 15000);
-  </script>
+
+    /* Module scope isn't global scope — the status banner's inline
+       onclick="manualRetry()" needs this explicit binding. */
+    window.manualRetry = manualRetry;
+    </script>
 
 </body>
 </html>

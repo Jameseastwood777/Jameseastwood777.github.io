@@ -1,0 +1,29 @@
+// ============================================================
+// St. John's College Notice Board — Firestore security rules
+// Deploy: firebase deploy --only firestore:rules
+// (or paste into Firebase Console → Firestore Database → Rules)
+//
+// Mirrors the Row Level Security model from the old
+// supabase_setup.sql: public (anon) can only READ; only a
+// logged-in admin (Firebase Auth) can write.
+// ============================================================
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /announcements/{docId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Anyone can log a view (insert-only). Only an authenticated
+    // admin can read the counts, so view totals can't be scraped
+    // or tampered with from the public page.
+    match /board_views/{docId} {
+      allow create: if true;
+      allow read: if request.auth != null;
+      allow update, delete: if false;
+    }
+  }
+}
