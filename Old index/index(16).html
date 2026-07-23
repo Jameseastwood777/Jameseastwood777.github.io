@@ -210,42 +210,6 @@
             display: block;
         }
 
-        .announcement-card .card-video {
-            width: 100%;
-            max-height: 360px;
-            border-radius: 4px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            display: block;
-            background-color: #000;
-        }
-
-        .announcement-card .card-attachments {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .announcement-card .attachment-link {
-            font-family: 'Arial', sans-serif;
-            font-size: 13px;
-            color: #1d6737;
-            background-color: #eef6f0;
-            border: 1px solid #1d6737;
-            border-radius: 4px;
-            padding: 5px 10px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .announcement-card .attachment-link:hover {
-            background-color: #1d6737;
-            color: #ffffff;
-        }
-
         .announcement-card .card-body {
             font-family: 'Times New Roman', serif;
             font-size: 16px;
@@ -357,13 +321,6 @@
         + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     }
 
-    function formatFileSize(bytes) {
-      if (!bytes && bytes !== 0) return '';
-      if (bytes < 1024) return bytes + ' B';
-      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-    }
-
     async function loadAnnouncements() {
       const list = document.getElementById('announcements-list');
 
@@ -383,26 +340,14 @@
         return;
       }
 
-      list.innerHTML = data.map(a => {
-        const attachments = Array.isArray(a.attachments) ? a.attachments : [];
-        return `
+      list.innerHTML = data.map(a => `
         <div class="announcement-card">
           <div class="card-title">${escapeHtml(a.title || 'Announcement')}</div>
           ${a.body ? `<div class="card-body">${escapeHtml(a.body)}</div>` : ''}
           ${a.image_url ? `<img class="card-image" src="${escapeHtml(a.image_url)}" alt="">` : ''}
-          ${a.video_url ? `<video class="card-video" src="${escapeHtml(a.video_url)}" controls preload="metadata"></video>` : ''}
-          ${attachments.length ? `
-            <div class="card-attachments">
-              ${attachments.map(f => `
-                <a class="attachment-link" href="${escapeHtml(f.url)}" target="_blank" rel="noopener">
-                  📎 ${escapeHtml(f.name || 'file')}${f.size ? ` (${formatFileSize(f.size)})` : ''}
-                </a>
-              `).join('')}
-            </div>` : ''}
           <div class="card-meta">Posted: ${formatTimestamp(a.created_at)}</div>
         </div>
-      `;
-      }).join('');
+      `).join('');
 
       restartAutoScroll();
     }

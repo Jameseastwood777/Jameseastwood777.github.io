@@ -198,67 +198,6 @@
             border-radius: 4px;
         }
 
-        .announcement-card video.thumb {
-            max-width: 100%;
-            max-height: 200px;
-            display: block;
-            margin-top: 8px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-            background: #000;
-        }
-
-        .announcement-card .attachment-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 8px;
-        }
-
-        .announcement-card .attachment-tags a {
-            font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            color: #1d6737;
-            background: #eef6f0;
-            border: 1px solid #1d6737;
-            border-radius: 10px;
-            padding: 3px 10px;
-            text-decoration: none;
-        }
-
-        .announcement-card .attachment-tags a:hover {
-            background: #1d6737;
-            color: #fff;
-        }
-
-        .selected-files {
-            list-style: none;
-            font-family: 'Arial', sans-serif;
-            font-size: 13px;
-            color: #444;
-            margin: -10px 0 18px;
-        }
-
-        .selected-files li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f2f2f2;
-            border-radius: 4px;
-            padding: 5px 10px;
-            margin-top: 6px;
-        }
-
-        .selected-files li button {
-            border: none;
-            background: none;
-            color: #c0392b;
-            font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            cursor: pointer;
-            padding: 0;
-        }
-
         .announcement-card .card-title {
             font-family: 'Arial', sans-serif;
             font-size: 16px;
@@ -424,13 +363,6 @@
     <label for="ann-image">Image (optional)</label>
     <input type="file" id="ann-image" accept="image/*">
 
-    <label for="ann-video">Video (optional)</label>
-    <input type="file" id="ann-video" accept="video/*">
-
-    <label for="ann-files">Attach files (optional, multiple allowed)</label>
-    <input type="file" id="ann-files" multiple>
-    <ul class="selected-files" id="ann-files-list"></ul>
-
     <div class="btn-row">
         <button class="btn-post" id="post-btn" onclick="postAnnouncement()">Post Announcement</button>
         <button class="btn-clear" onclick="clearAll()">Clear All Announcements</button>
@@ -582,38 +514,6 @@
             + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     }
 
-    /* --- Track multiple attachment files (the native file input replaces its
-       whole FileList on every pick, so we keep our own running selection) --- */
-    let selectedFiles = [];
-
-    function formatFileSize(bytes) {
-        if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-    }
-
-    function renderSelectedFiles() {
-        const list = document.getElementById('ann-files-list');
-        list.innerHTML = selectedFiles.map((f, i) => `
-            <li>
-                <span>${escapeHtml(f.name)} (${formatFileSize(f.size)})</span>
-                <button type="button" data-idx="${i}">Remove</button>
-            </li>
-        `).join('');
-        list.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                selectedFiles.splice(Number(btn.getAttribute('data-idx')), 1);
-                renderSelectedFiles();
-            });
-        });
-    }
-
-    document.getElementById('ann-files').addEventListener('change', function() {
-        selectedFiles = selectedFiles.concat(Array.from(this.files));
-        this.value = '';
-        renderSelectedFiles();
-    });
-
     function showToast(msg, success = true) {
         const t = document.getElementById('toast');
         t.style.display = 'block';
@@ -625,31 +525,15 @@
     }
 
     /* --- Post / delete / clear --- */
-    async function uploadOne(file) {
-        const ext = file.name.split('.').pop();
-        const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-        const { error: uploadError } = await supabaseClient.storage
-            .from(BUCKET)
-            .upload(path, file);
-        if (uploadError) throw uploadError;
-
-        const { data: publicUrlData } = supabaseClient.storage
-            .from(BUCKET)
-            .getPublicUrl(path);
-        return publicUrlData.publicUrl;
-    }
-
     async function postAnnouncement() {
         const title = document.getElementById('ann-title').value.trim();
         const body  = document.getElementById('ann-body').value.trim();
         const fileInput = document.getElementById('ann-image');
-        const videoInput = document.getElementById('ann-video');
         const file = fileInput.files[0];
-        const videoFile = videoInput.files[0];
         const postBtn = document.getElementById('post-btn');
 
-        if (!title && !body && !file && !videoFile && selectedFiles.length === 0) {
-            showToast('Please add a title, message, image, video, or file before posting.', false);
+        if (!title && !body && !file) {
+            showToast('Please add a title, message, or image before posting.', false);
             return;
         }
 
@@ -657,31 +541,25 @@
         postBtn.textContent = 'Posting…';
 
         let image_url = null;
-        let video_url = null;
-        const attachments = [];
 
         try {
             if (file) {
-                postBtn.textContent = 'Uploading image…';
-                image_url = await uploadOne(file);
-            }
+                const ext = file.name.split('.').pop();
+                const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+                const { error: uploadError } = await supabaseClient.storage
+                    .from(BUCKET)
+                    .upload(path, file);
+                if (uploadError) throw uploadError;
 
-            if (videoFile) {
-                postBtn.textContent = 'Uploading video…';
-                video_url = await uploadOne(videoFile);
+                const { data: publicUrlData } = supabaseClient.storage
+                    .from(BUCKET)
+                    .getPublicUrl(path);
+                image_url = publicUrlData.publicUrl;
             }
-
-            for (let i = 0; i < selectedFiles.length; i++) {
-                postBtn.textContent = `Uploading file ${i + 1} of ${selectedFiles.length}…`;
-                const url = await uploadOne(selectedFiles[i]);
-                attachments.push({ name: selectedFiles[i].name, url, size: selectedFiles[i].size });
-            }
-
-            postBtn.textContent = 'Posting…';
 
             const { error: insertError } = await supabaseClient
                 .from('announcements')
-                .insert({ title: title || 'Announcement', body, image_url, video_url, attachments });
+                .insert({ title: title || 'Announcement', body, image_url });
 
             if (insertError) throw insertError;
 
@@ -689,9 +567,6 @@
             document.getElementById('ann-title').value = '';
             document.getElementById('ann-body').value = '';
             fileInput.value = '';
-            videoInput.value = '';
-            selectedFiles = [];
-            renderSelectedFiles();
             renderPosted();
         } catch (err) {
             console.error(err);
@@ -742,23 +617,15 @@
             return;
         }
 
-        list.innerHTML = data.map(a => {
-            const attachments = Array.isArray(a.attachments) ? a.attachments : [];
-            return `
+        list.innerHTML = data.map(a => `
             <div class="announcement-card">
                 <button class="btn-delete" onclick="deleteAnnouncement('${a.id}')">Remove</button>
                 <div class="card-title">${escapeHtml(a.title)}</div>
                 ${a.body ? `<div class="card-body">${escapeHtml(a.body)}</div>` : ''}
                 ${a.image_url ? `<img class="thumb" src="${escapeHtml(a.image_url)}" alt="">` : ''}
-                ${a.video_url ? `<video class="thumb" src="${escapeHtml(a.video_url)}" controls preload="metadata"></video>` : ''}
-                ${attachments.length ? `
-                    <div class="attachment-tags">
-                        ${attachments.map(f => `<a href="${escapeHtml(f.url)}" target="_blank" rel="noopener">📎 ${escapeHtml(f.name)}</a>`).join('')}
-                    </div>` : ''}
                 <div class="card-meta">Posted: ${formatTimestamp(a.created_at)}</div>
             </div>
-        `;
-        }).join('');
+        `).join('');
     }
 </script>
 </body>
