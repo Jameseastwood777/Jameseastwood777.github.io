@@ -192,36 +192,6 @@
             margin-bottom: 14px;
         }
 
-        .announcement-card.priority-important {
-            border-left-color: #d62b31;
-        }
-
-        .announcement-card.priority-urgent {
-            border-left-color: #f0d956;
-        }
-
-        .priority-badge {
-            display: inline-block;
-            font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            padding: 3px 10px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-        }
-
-        .priority-badge.badge-important {
-            background-color: #d62b31;
-            color: #fff;
-        }
-
-        .priority-badge.badge-urgent {
-            background-color: #f0d956;
-            color: #4a3c00;
-        }
-
         .announcement-card .card-title {
             font-family: 'Arial', sans-serif;
             font-size: 17px;
@@ -415,13 +385,8 @@
 
       list.innerHTML = data.map(a => {
         const attachments = Array.isArray(a.attachments) ? a.attachments : [];
-        const priority = a.priority || 'normal';
-        const priorityClass = priority !== 'normal' ? ` priority-${priority}` : '';
-        const priorityBadge = priority === 'important' ? '<span class="priority-badge badge-important">Important</span>'
-          : priority === 'urgent' ? '<span class="priority-badge badge-urgent">Urgent</span>' : '';
         return `
-        <div class="announcement-card${priorityClass}">
-          ${priorityBadge}
+        <div class="announcement-card">
           <div class="card-title">${escapeHtml(a.title || 'Announcement')}</div>
           ${a.body ? `<div class="card-body">${escapeHtml(a.body)}</div>` : ''}
           ${a.image_url ? `<img class="card-image" src="${escapeHtml(a.image_url)}" alt="">` : ''}

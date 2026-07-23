@@ -126,22 +126,6 @@
             border-color: #1d6737;
         }
 
-        select#ann-priority {
-            width: 100%;
-            font-family: 'Times New Roman', serif;
-            font-size: 16px;
-            border: 2px solid #ccc;
-            border-radius: 4px;
-            padding: 10px 12px;
-            margin-bottom: 18px;
-            outline: none;
-            background: #fff;
-        }
-
-        select#ann-priority:focus {
-            border-color: #1d6737;
-        }
-
         textarea {
             resize: vertical;
             min-height: 120px;
@@ -202,36 +186,6 @@
             padding: 12px 16px;
             margin-bottom: 12px;
             position: relative;
-        }
-
-        .announcement-card.priority-important {
-            border-left-color: #d62b31;
-        }
-
-        .announcement-card.priority-urgent {
-            border-left-color: #f0d956;
-        }
-
-        .priority-badge {
-            display: inline-block;
-            font-family: 'Arial', sans-serif;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            padding: 2px 8px;
-            border-radius: 10px;
-            margin-bottom: 6px;
-        }
-
-        .priority-badge.badge-important {
-            background-color: #d62b31;
-            color: #fff;
-        }
-
-        .priority-badge.badge-urgent {
-            background-color: #f0d956;
-            color: #4a3c00;
         }
 
         .announcement-card img.thumb {
@@ -464,13 +418,6 @@
     <label for="ann-title">Title</label>
     <input type="text" id="ann-title" placeholder="e.g. Sports Day Reminder">
 
-    <label for="ann-priority">Priority</label>
-    <select id="ann-priority">
-        <option value="normal" selected>Normal</option>
-        <option value="important">Important</option>
-        <option value="urgent">Urgent</option>
-    </select>
-
     <label for="ann-body">Message (optional)</label>
     <textarea id="ann-body" placeholder="Type the announcement text here..."></textarea>
 
@@ -694,7 +641,6 @@
 
     async function postAnnouncement() {
         const title = document.getElementById('ann-title').value.trim();
-        const priority = document.getElementById('ann-priority').value;
         const body  = document.getElementById('ann-body').value.trim();
         const fileInput = document.getElementById('ann-image');
         const videoInput = document.getElementById('ann-video');
@@ -735,13 +681,12 @@
 
             const { error: insertError } = await supabaseClient
                 .from('announcements')
-                .insert({ title: title || 'Announcement', body, image_url, video_url, attachments, priority });
+                .insert({ title: title || 'Announcement', body, image_url, video_url, attachments });
 
             if (insertError) throw insertError;
 
             showToast('Announcement posted successfully!');
             document.getElementById('ann-title').value = '';
-            document.getElementById('ann-priority').value = 'normal';
             document.getElementById('ann-body').value = '';
             fileInput.value = '';
             videoInput.value = '';
@@ -799,14 +744,9 @@
 
         list.innerHTML = data.map(a => {
             const attachments = Array.isArray(a.attachments) ? a.attachments : [];
-            const priority = a.priority || 'normal';
-            const priorityClass = priority !== 'normal' ? ` priority-${priority}` : '';
-            const priorityBadge = priority === 'important' ? '<span class="priority-badge badge-important">Important</span>'
-                : priority === 'urgent' ? '<span class="priority-badge badge-urgent">Urgent</span>' : '';
             return `
-            <div class="announcement-card${priorityClass}">
+            <div class="announcement-card">
                 <button class="btn-delete" onclick="deleteAnnouncement('${a.id}')">Remove</button>
-                ${priorityBadge}
                 <div class="card-title">${escapeHtml(a.title)}</div>
                 ${a.body ? `<div class="card-body">${escapeHtml(a.body)}</div>` : ''}
                 ${a.image_url ? `<img class="thumb" src="${escapeHtml(a.image_url)}" alt="">` : ''}
